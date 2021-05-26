@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import AuthTemplate from '../components/auth/AuthTemplate';
 
 function LoginPage() {
-  return <LoginPageBlock>LoginPage</LoginPageBlock>;
+  return <AuthTemplate type="login">LoginPage</AuthTemplate>;
 }
 
 const LoginPageBlock = styled.div``;

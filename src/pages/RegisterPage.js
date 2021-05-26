@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import AuthTemplate from '../components/auth/AuthTemplate';
 
 function RegisterPage() {
-  return <RegisterPageBlock>RegisterPage</RegisterPageBlock>;
+  return <AuthTemplate type="register" />;
 }
 
 const RegisterPageBlock = styled.div``;
