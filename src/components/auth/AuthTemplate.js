@@ -1,22 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import LoginForm from '../../containers/auth/LoginForm';
+import RegisterForm from '../../containers/auth/RegisterForm';
 import { palette } from '../../lib/styles/palette';
-import AuthForm from './AuthForm';
 
 function AuthTemplate({ type }) {
   return (
     <AuthTemplateBlock>
       <WhiteBox>
         <h3>OMOK ONLINE</h3>
-        <AuthForm type={type} />
-        <Footer>
-          {type === 'login' ? (
-            <Link to="/register">회원가입</Link>
-          ) : (
-            <Link to="/login">로그인</Link>
-          )}
-        </Footer>
+        {type === 'login' ? (
+          <>
+            <LoginForm />
+            <Footer>
+              <Link to="/register">회원가입</Link>
+            </Footer>
+          </>
+        ) : (
+          <>
+            <RegisterForm />
+            <Footer>
+              <Link to="/login">로그인</Link>
+            </Footer>
+          </>
+        )}
       </WhiteBox>
     </AuthTemplateBlock>
   );
