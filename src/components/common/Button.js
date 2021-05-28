@@ -9,7 +9,7 @@ function Button(props) {
 const ButtonBlock = styled.button`
   padding: 0.7rem 1rem;
   color: #fff;
-  background: ${palette.darkwoodThree[4]};
+  background: ${palette.beigeNeutral[4]};
   border: none;
   outline: none;
   font-size: 1rem;
@@ -18,7 +18,7 @@ const ButtonBlock = styled.button`
   cursor: pointer;
 
   &:hover {
-    background: ${palette.darkwoodThree[1]};
+    background: ${palette.beigeNeutral[3]};
   }
 `;
 
