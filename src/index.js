@@ -10,7 +10,7 @@ import rootReducer, { rootSaga } from './modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 import client from './api/client';
-import { getUser } from './modules/user';
+import { getToken, getUser } from './modules/user';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -23,6 +23,7 @@ sagaMiddleware.run(rootSaga);
 const accessToken = sessionStorage.getItem('Authorization');
 if (accessToken) {
   client.defaults.headers.common['Authorization'] = accessToken;
+  store.dispatch(getToken(accessToken));
   store.dispatch(getUser());
 }
 

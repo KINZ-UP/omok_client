@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { palette } from '../../lib/styles/palette';
 
-function GameItem({ title, isStart, currNumber }) {
+function GameItem({ title, players, isStarted, onClickItem }) {
   return (
-    <GameItemBlock>
+    <GameItemBlock onClick={onClickItem}>
       <h3 className="game-title">{title}</h3>
       <div className="game-info">
-        <p className="curr-state">{isStart ? '진행중' : '대기중'}</p>
-        <p className="curr-number">{currNumber}/2</p>
+        <p className="curr-state">{isStarted ? '진행중' : '대기중'}</p>
+        <p className="curr-number">{players.length}/2</p>
       </div>
     </GameItemBlock>
   );

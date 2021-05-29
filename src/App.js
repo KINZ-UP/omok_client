@@ -11,7 +11,7 @@ function App() {
   return (
     <>
       <Route component={BulletinPage} path="/" exact />
-      <Route component={BoardPage} path="/board/:id" />
+      <Route component={BoardPage} path="/board" />
       <Route path="/login">
         {loggedIn ? <Redirect to="/" /> : <LoginPage />}
       </Route>

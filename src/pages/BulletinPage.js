@@ -5,8 +5,8 @@ import Button from '../components/common/Button';
 import Header from '../components/common/Header';
 import Responsive from '../components/common/Responsive';
 import CreateModalContainer from '../containers/main/CreateModalContainer';
-import GameList from '../components/main/GameList';
 import { openModal } from '../modules/create';
+import GameListContainer from '../containers/main/GameListContainer';
 
 function BulletinPage() {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ function BulletinPage() {
       <Header />
       <MainBlock>
         <StyledButton onClick={onOpenCreateModal}>새게임 +</StyledButton>
-        <GameList />
+        <GameListContainer />
       </MainBlock>
       <CreateModalContainer />
     </BulletinPageBlock>

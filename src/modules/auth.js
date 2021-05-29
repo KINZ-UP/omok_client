@@ -44,6 +44,7 @@ function* loginSaga(action) {
   yield put(startLoading(LOGIN));
   try {
     const resp = yield call(authAPI.login, action.payload);
+    console.log(resp);
     yield put(getToken(resp.data.accessToken));
   } catch (e) {
     yield put({
@@ -57,7 +58,9 @@ function* loginSaga(action) {
 function* registerSaga(action) {
   yield put(startLoading(REGISTER));
   try {
+    console.log('register');
     const resp = yield call(authAPI.register, action.payload);
+    console.log(resp);
     yield put(getToken(resp.data.accessToken));
   } catch (e) {
     yield put({

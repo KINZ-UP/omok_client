@@ -51,7 +51,7 @@ function CreateModalContainer({ history }) {
 
   useEffect(() => {
     if (roomId) {
-      history.push(`/board/${roomId}`);
+      history.push('/board');
     }
   }, [history, roomId]);
 
