@@ -9,6 +9,8 @@ import { applyMiddleware, createStore } from 'redux';
 import rootReducer, { rootSaga } from './modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
+import client from './api/client';
+import { getUser } from './modules/user';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -16,6 +18,13 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(sagaMiddleware))
 );
 sagaMiddleware.run(rootSaga);
+
+// Keep Logged-in After Refeshing
+const accessToken = localStorage.getItem('Authorization');
+if (accessToken) {
+  client.defaults.headers.common['Authorization'] = accessToken;
+  store.dispatch(getUser());
+}
 
 ReactDOM.render(
   <Provider store={store}>

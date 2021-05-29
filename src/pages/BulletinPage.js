@@ -1,11 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Button from '../components/common/Button';
 import Header from '../components/common/Header';
-import Modal from '../components/common/Modal';
 import Responsive from '../components/common/Responsive';
-import CreateModal from '../components/main/CreateModal';
+import CreateModalContainer from '../containers/main/CreateModalContainer';
 import GameList from '../components/main/GameList';
 import { openModal } from '../modules/create';
 
@@ -22,7 +21,7 @@ function BulletinPage() {
         <StyledButton onClick={onOpenCreateModal}>새게임 +</StyledButton>
         <GameList />
       </MainBlock>
-      <CreateModal />
+      <CreateModalContainer />
     </BulletinPageBlock>
   );
 }

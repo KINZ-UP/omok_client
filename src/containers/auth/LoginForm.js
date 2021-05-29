@@ -10,12 +10,12 @@ function LoginForm({ history }) {
   const type = 'login';
   const [errorMsg, setErrorMsg] = useState(null);
   const dispatch = useDispatch();
-  const { form, accessToken, authError, user } = useSelector(
+  const { form, accessToken, authError, loggedIn } = useSelector(
     ({ auth, user }) => ({
       form: auth.login,
-      accessToken: auth.accessToken,
       authError: auth.authError,
-      user: user,
+      accessToken: user.accessToken,
+      loggedIn: user.loggedIn,
     })
   );
   const { username, password } = form;
@@ -27,6 +27,7 @@ function LoginForm({ history }) {
 
   const onSubmitForm = (e) => {
     e.preventDefault();
+    console.log(username, password);
     if (username === '' || password === '') {
       setErrorMsg('입력되지 않은 항목이 존재합니다.');
       return;
@@ -53,15 +54,16 @@ function LoginForm({ history }) {
     }
     if (accessToken) {
       client.defaults.headers.common['Authorization'] = accessToken;
+      localStorage.setItem('Authorization', accessToken);
       dispatch(getUser());
     }
   }, [accessToken, authError, dispatch]);
 
   useEffect(() => {
-    if (user?.username) {
+    if (loggedIn) {
       history.push('/');
     }
-  }, [history, user]);
+  }, [history, loggedIn]);
 
   return (
     <AuthForm

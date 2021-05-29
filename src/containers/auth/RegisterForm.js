@@ -10,12 +10,14 @@ function RegisterForm({ history }) {
   const type = 'register';
   const [errorMsg, setErrorMsg] = useState(null);
   const dispatch = useDispatch();
-  const { form, accessToken, authError, user } = useSelector(({ auth }) => ({
-    form: auth.register,
-    accessToken: auth.accessToken,
-    authError: auth.authError,
-    user: auth.user,
-  }));
+  const { form, accessToken, authError, loggedIn } = useSelector(
+    ({ auth, user }) => ({
+      form: auth.register,
+      authError: auth.authError,
+      accessToken: user.accessToken,
+      loggedIn: user.loggedIn,
+    })
+  );
   const { username, password, passwordConfirm } = form;
 
   const onChangeInput = (e) => {
@@ -50,15 +52,16 @@ function RegisterForm({ history }) {
     }
     if (accessToken) {
       client.defaults.headers.common['Authorization'] = accessToken;
+      localStorage.setItem('Authorization', accessToken);
       dispatch(getUser());
     }
   }, [accessToken, authError, dispatch]);
 
   useEffect(() => {
-    if (user?.username) {
+    if (loggedIn) {
       history.push('/');
     }
-  }, [history, user]);
+  }, [history, loggedIn]);
 
   return (
     <AuthForm

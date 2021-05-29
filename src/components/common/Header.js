@@ -1,21 +1,39 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
+import client from '../../api/client';
 import { palette } from '../../lib/styles/palette';
+import { logout } from '../../modules/user';
 import Responsive from './Responsive';
 
-function Header() {
+function Header({ history }) {
   const username = useSelector(({ user }) => user.username);
+  const dispatch = useDispatch();
+  const onLogout = useCallback(() => {
+    localStorage.removeItem('Authorization');
+    client.defaults.headers.common['Authorization'] = null;
+    dispatch(logout());
+    history.push('/login');
+  }, [dispatch, history]);
+
   return (
     <HeaderBlock>
       <StyledResponsive>
         <div className="main-logo">OMOK ONLINE</div>
         <div className="auth-wrapper">
-          <p>{username}님 안녕하세요!</p>
-          <Link to="/login">
-            <div className="link">로그인</div>
-          </Link>
+          {username ? (
+            <>
+              <p>{username}님 안녕하세요!</p>
+              <div className="link" onClick={onLogout}>
+                로그아웃
+              </div>
+            </>
+          ) : (
+            <Link to="/login">
+              <div className="link">로그인</div>
+            </Link>
+          )}
         </div>
       </StyledResponsive>
     </HeaderBlock>
@@ -50,6 +68,7 @@ const HeaderBlock = styled.div`
     &:hover {
       background-color: ${palette.darkwoodGreen[0]};
     }
+    cursor: pointer;
   }
 `;
 
@@ -60,4 +79,4 @@ const StyledResponsive = styled(Responsive)`
   height: 100%;
 `;
 
-export default Header;
+export default withRouter(Header);

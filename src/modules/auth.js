@@ -1,18 +1,15 @@
 import { put, call, takeLatest } from 'redux-saga/effects';
 import { startLoading, finishLoading } from './loading';
 import * as authAPI from '../api/auth';
+import { getToken } from './user';
 
 // ACTION TYPE
 const CHANGE_INPUT = 'auth/CHANGE_INPUT';
 const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
 
 const LOGIN = 'auth/LOGIN';
-const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
-const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
-
 const REGISTER = 'auth/REGISTER';
-const REGISTER_SUCCESS = 'auth/REGISTER_SUCCESS';
-const REGISTER_FAILURE = 'auth/REGISTER_FAILURE';
+const AUTH_FAILURE = 'auth/AUTH_FAILURE';
 
 // ACTION CREATION FUNCTION
 export const changeInput = ({ type, name, value }) => ({
@@ -47,11 +44,10 @@ function* loginSaga(action) {
   yield put(startLoading(LOGIN));
   try {
     const resp = yield call(authAPI.login, action.payload);
-    yield put({ type: LOGIN_SUCCESS, payload: resp.data });
+    yield put(getToken(resp.data.accessToken));
   } catch (e) {
-    console.log(e.response.status);
     yield put({
-      type: LOGIN_FAILURE,
+      type: AUTH_FAILURE,
       payload: e,
       error: true,
     });
@@ -62,10 +58,10 @@ function* registerSaga(action) {
   yield put(startLoading(REGISTER));
   try {
     const resp = yield call(authAPI.register, action.payload);
-    yield put({ type: REGISTER_SUCCESS, payload: resp.data });
+    yield put(getToken(resp.data.accessToken));
   } catch (e) {
     yield put({
-      type: REGISTER_FAILURE,
+      type: AUTH_FAILURE,
       payload: e,
       error: true,
     });
@@ -89,7 +85,6 @@ const initialState = {
     password: '',
     passwordConfirm: '',
   },
-  accessToken: null,
   authError: null,
 };
 
@@ -114,31 +109,7 @@ function auth(state = initialState, action) {
         authError: null,
       };
     }
-    case LOGIN_SUCCESS: {
-      const { accessToken } = action.payload;
-      return {
-        ...state,
-        accessToken,
-        authError: null,
-      };
-    }
-    case REGISTER_SUCCESS: {
-      const { accessToken } = action.payload;
-      return {
-        ...state,
-        accessToken,
-        authError: null,
-      };
-    }
-    case LOGIN_FAILURE: {
-      const error = action.payload;
-      return {
-        ...state,
-        auth: null,
-        authError: error,
-      };
-    }
-    case REGISTER_FAILURE: {
+    case AUTH_FAILURE: {
       const error = action.payload;
       return {
         ...state,

@@ -2,12 +2,22 @@ import { put, call, takeLatest } from 'redux-saga/effects';
 import { startLoading, finishLoading } from './loading';
 import * as authAPI from '../api/auth';
 
-const GET_USER = 'auth/GET_USER';
-const GET_USER_SUCCESS = 'auth/GET_USER_SUCCESS';
-const GET_USER_FAILURE = 'auth/GET_USER_FAILURE';
+const GET_TOKEN = 'user/GET_TOKEN';
+const GET_USER = 'user/GET_USER';
+const GET_USER_SUCCESS = 'user/GET_USER_SUCCESS';
+const GET_USER_FAILURE = 'user/GET_USER_FAILURE';
+const LOGOUT = 'user/LOGOUT';
+
+export const getToken = (token) => ({
+  type: GET_TOKEN,
+  payload: token,
+});
 
 export const getUser = () => ({
   type: GET_USER,
+});
+export const logout = () => ({
+  type: LOGOUT,
 });
 
 function* getUserSaga(action) {
@@ -30,6 +40,8 @@ export function* userSaga() {
 }
 
 const initialState = {
+  accessToken: null,
+  loggedIn: false,
   username: null,
   error: null,
 };
@@ -37,10 +49,17 @@ const initialState = {
 // REDUCER
 function user(state = initialState, action) {
   switch (action.type) {
+    case GET_TOKEN: {
+      return {
+        ...state,
+        accessToken: action.payload,
+      };
+    }
     case GET_USER_SUCCESS: {
       const { username } = action.payload;
       return {
         ...state,
+        loggedIn: true,
         username,
       };
     }
@@ -50,6 +69,9 @@ function user(state = initialState, action) {
         ...state,
         error,
       };
+    }
+    case LOGOUT: {
+      return initialState;
     }
     default:
       return state;
