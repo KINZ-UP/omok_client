@@ -11,7 +11,7 @@ function Header({ history }) {
   const username = useSelector(({ user }) => user.username);
   const dispatch = useDispatch();
   const onLogout = useCallback(() => {
-    localStorage.removeItem('Authorization');
+    sessionStorage.removeItem('Authorization');
     client.defaults.headers.common['Authorization'] = null;
     dispatch(logout());
     history.push('/login');

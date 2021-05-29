@@ -52,7 +52,7 @@ function RegisterForm({ history }) {
     }
     if (accessToken) {
       client.defaults.headers.common['Authorization'] = accessToken;
-      localStorage.setItem('Authorization', accessToken);
+      sessionStorage.setItem('Authorization', accessToken);
       dispatch(getUser());
     }
   }, [accessToken, authError, dispatch]);

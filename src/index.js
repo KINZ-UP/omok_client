@@ -20,7 +20,7 @@ const store = createStore(
 sagaMiddleware.run(rootSaga);
 
 // Keep Logged-in After Refeshing
-const accessToken = localStorage.getItem('Authorization');
+const accessToken = sessionStorage.getItem('Authorization');
 if (accessToken) {
   client.defaults.headers.common['Authorization'] = accessToken;
   store.dispatch(getUser());
