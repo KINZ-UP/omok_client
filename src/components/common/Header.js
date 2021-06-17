@@ -43,17 +43,19 @@ function Header({ history }) {
 const HeaderBlock = styled.div`
   background-color: ${palette.darkwoodGreen[2]};
   color: #fff;
-  padding: 12px 0;
+  padding: 6px 0;
   font-weight: bold;
 
   .main-logo {
+    margin: 0.5rem 0;
     font-size: 1.2rem;
-    margin-right: auto;
+    padding-right: 1rem;
   }
 
   .auth-wrapper {
     display: flex;
     align-items: center;
+    margin-left: auto;
 
     > p {
       font-size: 0.9rem;

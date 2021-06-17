@@ -7,12 +7,13 @@ function Button(props) {
 }
 
 const ButtonBlock = styled.button`
-  padding: 0.7rem 1rem;
+  padding: 0.5rem 1rem;
   color: #fff;
   background: ${palette.beigeNeutral[4]};
   border: none;
   outline: none;
-  font-size: 1rem;
+  font-family: 'Do Hyeon', sans-serif;
+  font-size: 1.1rem;
   font-weight: bold;
   border-radius: 3px;
   cursor: pointer;
