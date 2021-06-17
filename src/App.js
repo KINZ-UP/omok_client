@@ -2,8 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 import SocketContainer from './containers/SocketContainer';
-import BoardPage from './pages/BoardPage';
-import BulletinPage from './pages/BulletinPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
