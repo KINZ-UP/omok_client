@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { palette } from '../../lib/styles/palette';
 
-function GameItem({ title, players, isStarted, onClickItem }) {
+function GameItem({ title, currNum, isStarted, onClickItem }) {
   return (
     <GameItemBlock onClick={onClickItem}>
-      <h3 className="game-title">{title}</h3>
+      <p className="game-title">{title}</p>
       <div className="game-info">
         <p className="curr-state">{isStarted ? '진행중' : '대기중'}</p>
-        <p className="curr-number">{players.length}/2</p>
+        <p className="curr-number">{currNum}/2</p>
       </div>
     </GameItemBlock>
   );
@@ -18,30 +18,40 @@ const GameItemBlock = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  padding: 20px 15px;
+  padding: 15px 25px;
   border-radius: 3px;
-  box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 
   background-color: ${palette.gray[0]};
+  font-family: 'Do Hyeon', sans-serif;
+  font-size: 1.2rem;
+  cursor: pointer;
 
   & + & {
     margin-top: 15px;
   }
 
   .game-title {
-    margin-right: auto;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 500;
+    padding-right: 2rem;
+    word-break: break-all;
   }
 
   .game-info {
     display: flex;
     justify-content: space-between;
+    margin-left: auto;
+    color: ${palette.gray[8]};
 
     .curr-state {
-      width: 3.5rem;
+      width: 4rem;
       text-align: left;
     }
     .curr-number {
-      width: 2.5rem;
+      width: 3rem;
       text-align: right;
     }
   }

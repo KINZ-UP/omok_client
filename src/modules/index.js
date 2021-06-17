@@ -6,6 +6,7 @@ import loading from './loading';
 import create from './create';
 import room, { roomSaga } from './room';
 import board, { boardSaga } from './board';
+import socket from './socket';
 
 const rootReducer = combineReducers({
   auth,
@@ -14,10 +15,11 @@ const rootReducer = combineReducers({
   create,
   room,
   board,
+  socket,
 });
 
 export function* rootSaga() {
-  yield all([authSaga(), userSaga(), roomSaga(), boardSaga()]);
+  yield all([authSaga(), userSaga(), boardSaga(), roomSaga()]);
 }
 
 export default rootReducer;

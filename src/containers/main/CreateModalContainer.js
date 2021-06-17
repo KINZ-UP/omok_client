@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
-import { create } from '../../modules/room';
+import { create, createRoom, setRoomId } from '../../modules/room';
 import { closeModal, setDefaultTitle } from '../../modules/create';
 import CreateModal from '../../components/main/CreateModal';
+import useSocket from '../../lib/styles/useSocket';
 
 const defaultTitles = [
   '오목 한 겜 하실분!',
@@ -12,6 +13,7 @@ const defaultTitles = [
 ];
 
 function CreateModalContainer({ history }) {
+  const socket = useSocket();
   const { isOpen, title, isPrivate, password, username, roomId } = useSelector(
     ({ create, user, room }) => ({
       isOpen: create.isOpen,
@@ -19,7 +21,7 @@ function CreateModalContainer({ history }) {
       isPrivate: create.isPrivate,
       password: create.password,
       username: user.username,
-      roomId: room._id,
+      roomId: room.roomId,
     })
   );
   const dispatch = useDispatch();
@@ -28,19 +30,8 @@ function CreateModalContainer({ history }) {
   }, [dispatch]);
 
   const onCreate = useCallback(() => {
-    dispatch(
-      create({
-        title,
-        isPrivate,
-        password,
-        players: [
-          {
-            username,
-          },
-        ],
-      })
-    );
-  }, [dispatch, isPrivate, password, title, username]);
+    dispatch(createRoom({ title, password }));
+  }, [dispatch, title, password]);
 
   useEffect(() => {
     if (isOpen) {
@@ -49,11 +40,10 @@ function CreateModalContainer({ history }) {
     }
   }, [isOpen, dispatch]);
 
-  useEffect(() => {
-    if (roomId) {
-      history.push('/board');
-    }
-  }, [history, roomId]);
+  // useEffect(() => {
+  //   if (!socket) return;
+  //   socket.on('sendRoomId', (roomId) => history.push(`/board/${roomId}`));
+  // }, [socket, dispatch, history]);
 
   return <CreateModal isOpen={isOpen} onClose={onClose} onCreate={onCreate} />;
 }
