@@ -10,6 +10,7 @@ const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
 const LOGIN = 'auth/LOGIN';
 const REGISTER = 'auth/REGISTER';
 const AUTH_FAILURE = 'auth/AUTH_FAILURE';
+const INIT_AUTH_ERROR = 'auth/INIT_AUTH_ERROR';
 
 // ACTION CREATION FUNCTION
 export const changeInput = ({ type, name, value }) => ({
@@ -38,6 +39,9 @@ export const register = ({ username, password }) => ({
     password,
   },
 });
+export const initAuthError = () => ({
+  type: INIT_AUTH_ERROR,
+});
 
 // SAGAS
 function* loginSaga(action) {
@@ -57,9 +61,7 @@ function* loginSaga(action) {
 function* registerSaga(action) {
   yield put(startLoading(REGISTER));
   try {
-    console.log('register');
     const resp = yield call(authAPI.register, action.payload);
-    console.log(resp);
     yield put(getToken(resp.data.accessToken));
   } catch (e) {
     yield put({
@@ -117,6 +119,12 @@ function auth(state = initialState, action) {
         ...state,
         auth: null,
         authError: error,
+      };
+    }
+    case INIT_AUTH_ERROR: {
+      return {
+        ...state,
+        authError: null,
       };
     }
     default:

@@ -289,6 +289,7 @@ const initialState = {
   turnIdx: null,
   isMyTurn: false,
   rollbackRequest: false,
+  joinError: null,
 };
 
 function control(state = initialState, action) {
