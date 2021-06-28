@@ -125,7 +125,6 @@ export function* openControlChannelSaga() {
         }
         case 'MESSAGE': {
           const { username, content } = action.payload;
-          console.log(username, content);
           const message = {
             username,
             content,
@@ -146,9 +145,13 @@ export function* openControlChannelSaga() {
           yield put({ type: START_GAME, payload: { turnIdx } });
           break;
         }
+        case 'START_ERROR': {
+          const { message } = action.payload;
+          alert(message);
+          break;
+        }
         case 'END': {
           const { winnerIdx } = action.payload;
-          console.log(winnerIdx);
           yield put({ type: END_GAME, payload: { winnerIdx } });
           yield put(closeChannel('game'));
           break;
