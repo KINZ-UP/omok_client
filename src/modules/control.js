@@ -24,6 +24,7 @@ const JOIN_ROOM_SUCCESS = 'control/JOIN_ROOM_SUCCESS';
 const JOIN_ROOM_FAILURE = 'control/JOIN_ROOM_FAILURE';
 const LEAVE_ROOM = 'control/LEAVE_ROOM';
 const NEW_PLAYER = 'control/NEW_PLAYER';
+const EXIT_USER = 'control/EXIT_USER';
 const SEND_MESSAGE = 'control/SEND_MESSAGE';
 const UPDATE_MESSAGE = 'control/UPDATE_MESSAGE';
 const CHANGE_MESSAGE = 'control/CHANGE_MESSAGE';
@@ -54,8 +55,9 @@ export const joinRoom = (roomId, username) => ({
   type: JOIN_ROOM,
   payload: { roomId, username },
 });
-export const leaveRoom = () => ({
+export const leaveRoom = (isReplace) => ({
   type: LEAVE_ROOM,
+  payload: isReplace,
 });
 export const newPlayer = (player) => ({
   type: NEW_PLAYER,
@@ -111,10 +113,14 @@ export function* openControlChannelSaga() {
   try {
     while (true) {
       const action = yield take(channel);
-      console.log(action);
       switch (action.type) {
         case 'NEW_USER': {
           yield put({ type: NEW_PLAYER, payload: action.username });
+          break;
+        }
+        case 'EXIT_USER': {
+          const { players, exitUser } = action.payload;
+          yield put({ type: EXIT_USER, payload: { players, exitUser } });
           break;
         }
         case 'MESSAGE': {
@@ -142,6 +148,7 @@ export function* openControlChannelSaga() {
         }
         case 'END': {
           const { winnerIdx } = action.payload;
+          console.log(winnerIdx);
           yield put({ type: END_GAME, payload: { winnerIdx } });
           yield put(closeChannel('game'));
           break;
@@ -158,6 +165,11 @@ export function* openControlChannelSaga() {
         case 'DECLINE_ROLLBACK': {
           console.log('rollback request has been declined');
           alert('거절!!');
+          break;
+        }
+        case 'ANOTHER_CONNECTION': {
+          alert('다른 기기에서 접속하였습니다.');
+          yield put({ type: LEAVE_ROOM, payload: true });
           break;
         }
         default:
@@ -197,7 +209,7 @@ function* joinRoomSaga(action) {
   }
 }
 
-function* leaveRoomSaga() {
+function* leaveRoomSaga(action) {
   const { socket } = yield select((state) => state.socket);
   const { roomId } = yield select((state) => state.control);
   console.log('You have left the Room', roomId);
@@ -205,8 +217,12 @@ function* leaveRoomSaga() {
   const history = yield getContext('history');
   history.push('/');
 
-  socket.emit('onLeaveRoom', { roomId });
   yield put({ type: INITIALIZE });
+
+  const isReplace = action.payload;
+  if (isReplace) return;
+
+  socket.emit('onLeaveRoom', { roomId });
 }
 
 function* sendMessageSaga() {
@@ -265,8 +281,8 @@ function* declineRollbackSaga() {
 
 function* surrenderSaga() {
   const { socket } = yield select((state) => state.socket);
-  const { roomId } = yield select((state) => state.control);
-  socket.emit('surrender', roomId);
+  const { roomId, myIdx } = yield select((state) => state.control);
+  socket.emit('surrender', { roomId, loserIdx: myIdx });
 }
 
 export function* controlSaga() {
@@ -347,6 +363,19 @@ function control(state = initialState, action) {
           type: 'NOTICE',
           message: `- ${username}님이 접속하였습니다 -`,
         }),
+      };
+    }
+    case EXIT_USER: {
+      const { players, exitUser } = action.payload;
+      return {
+        ...state,
+        players: players,
+        chatLog: state.chatLog.concat({
+          type: 'NOTICE',
+          message: `- ${exitUser}님이 나가셨습니다 -`,
+        }),
+        myIdx: 0,
+        isOwner: true,
       };
     }
     case INIT_MESSAGE: {
