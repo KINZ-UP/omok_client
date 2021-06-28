@@ -1,5 +1,3 @@
-import { eventChannel, buffers } from 'redux-saga';
-
 import {
   take,
   put,
@@ -9,12 +7,12 @@ import {
   takeEvery,
 } from 'redux-saga/effects';
 import { finishLoading, startLoading } from './loading';
-import * as roomApi from '../api/room';
 import {
   createSocketChannel,
   handleCloseChannel,
 } from '../lib/styles/createSocketChannel';
 import { openChannel } from './socket';
+import { setRoomId } from './control';
 
 // ACTION TYPE
 const INITIALIZE = '/room/INITIALIZE';
@@ -31,6 +29,10 @@ const REQUEST_JOIN = 'room/REQUEST_JOIN';
 const REQUEST_JOIN_FAILURE = 'room/REQUEST_JOIN_FAILURE';
 const CHECK_REQUEST_JOIN_ERROR = 'room/CHECK_REQUEST_JOIN_ERROR';
 
+const CONFIRM_PASSWORD = 'room/CONFIRM_PASSWORD';
+const CONFIRM_PASSWORD_SUCCESS = 'room/CONFIRM_PASSWORD_SUCCESS';
+const CONFIRM_PASSWORD_FAILURE = 'room/CONFIRM_PASSWORD_FAILURE';
+
 const JOIN = 'room/JOIN';
 const JOIN_SUCCESS = 'room/JOIN_SUCCESS';
 const JOIN_FAILURE = 'room/JOIN_FAILURE';
@@ -39,6 +41,11 @@ const LEAVE_ROOM = 'room/LEAVE_ROOM';
 
 const SET_ROOM_INFO = 'room/SET_ROOM_INFO';
 const SET_ERROR = 'room/GET_ROOM_FAILURE';
+
+const UPDATE_USER = 'room/UPDATE_USER';
+const UPDATE_MESSAGE = 'room/UPDATE_MESSAGE';
+
+const OPEN_CONTROL_CHANNEL = 'room/OPEN_CONTROL_CHANNEL';
 
 // ACTION CREATION FUNCTION
 export const initialize = () => ({
@@ -51,13 +58,9 @@ export const createRoom = (roomData) => ({
 export const getRooms = () => ({
   type: GET_ROOMS,
 });
-export const requestJoin = (roomId) => ({
+export const requestJoin = ({ roomId, password }) => ({
   type: REQUEST_JOIN,
-  payload: { roomId },
-});
-export const join = ({ roomId, username }) => ({
-  type: JOIN,
-  payload: { roomId, username },
+  payload: { roomId, password },
 });
 export const leaveRoom = (roomId) => ({
   type: LEAVE_ROOM,
@@ -77,12 +80,15 @@ export const setRoomInfo = ({ title, players, isStarted }) => ({
     isStarted,
   },
 });
+// export const openControlChannel = () => ({
+//   type: OPEN_CONTROL_CHANNEL,
+// });
 
 function* getRoomsSaga() {
   const { socket } = yield select((state) => state.socket);
   let channel;
   try {
-    yield socket.emit('requestRoomList');
+    socket.emit('requestRoomList');
     channel = yield call(createSocketChannel, socket, 'sendRoomList');
     yield put(openChannel('roomList', channel));
     while (true) {
@@ -102,12 +108,12 @@ function* createRoomSaga(action) {
   yield put(startLoading(CREATE_ROOM));
   try {
     const { title, password } = action.payload;
-    yield socket.emit('onCreateRoom', { title, password });
+    socket.emit('onCreateRoom', { title, password });
 
     channel = yield call(createSocketChannel, socket, 'sendRoomId');
     const roomId = yield take(channel);
 
-    yield put({ type: SET_ROOMID, payload: roomId });
+    yield put(setRoomId(roomId));
   } catch (e) {
     console.error(e);
     yield put({ type: SET_ERROR, payload: e });
@@ -123,8 +129,8 @@ function* requestJoinSaga(action) {
 
   yield put(startLoading(REQUEST_JOIN));
   try {
-    const { roomId } = action.payload;
-    yield socket.emit('requestJoin', { roomId });
+    const { roomId, password } = action.payload;
+    socket.emit('requestJoin', { roomId, password });
     channel = yield call(createSocketChannel, socket, 'responseRequestJoin');
     const resp = yield take(channel);
 
@@ -142,20 +148,10 @@ function* requestJoinSaga(action) {
   }
 }
 
-function* leaveRoomSaga(action) {
-  const { roomId } = action.payload;
-  const { socket } = yield select((state) => state.socket);
-  yield put(initializeRoomId());
-  yield socket.emit('onLeaveRoom', { roomId });
-}
-
 export function* roomSaga() {
   yield takeEvery(GET_ROOMS, getRoomsSaga);
   yield takeLatest(CREATE_ROOM, createRoomSaga);
   yield takeLatest(REQUEST_JOIN, requestJoinSaga);
-  yield takeLatest(LEAVE_ROOM, leaveRoomSaga);
-  // yield takeLatest(CREATE, createSaga);
-  // yield takeLatest(JOIN, joinSaga);
 }
 
 // INITIAL STATE
@@ -164,6 +160,7 @@ const initialState = {
   roomId: null,
   isJoined: false,
   joined: null,
+  joinError: null,
   roomError: null,
   requestJoinError: null,
 };
@@ -197,31 +194,6 @@ function room(state = initialState, action) {
         ...state,
         roomError: action.payload,
       };
-    }
-    case JOIN_SUCCESS: {
-      const { _id, title, password, isPrivate, isStarted, players } =
-        action.payload;
-      return {
-        ...state,
-        isJoined: true,
-        joined: {
-          _id,
-          title,
-          password,
-          isPrivate,
-          isStarted,
-          players: players.map((player) => ({ username: player.username })),
-        },
-        roomError: null,
-      };
-    }
-    case JOIN_FAILURE: {
-      const {
-        status,
-        data: { message },
-      } = action.payload.response;
-
-      return { ...state, roomError: { status, message } };
     }
     case SET_ROOMID: {
       return {

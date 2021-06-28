@@ -19,5 +19,7 @@ const StoneBlock = styled.div`
     `translate(${100 * props.position.x}%, ${100 * props.position.y}%)`};
 
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+
+  z-index: 1;
 `;
 export default Stone;

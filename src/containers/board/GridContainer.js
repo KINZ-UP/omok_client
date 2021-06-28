@@ -1,17 +1,19 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Grid from '../../components/board/Grid';
 import { mouseLeave, mouseMove } from '../../modules/board';
 
 function GridContainer() {
   const { mouseCoord } = useSelector(({ board }) => board);
+  const { isStarted, isMyTurn } = useSelector(({ control }) => control);
+
   const dispatch = useDispatch();
   const onMouseMove = useCallback(
     (e) => {
-      console.log(e.pageX, e.pageY);
+      if (!isStarted || !isMyTurn) return;
       dispatch(mouseMove(e));
     },
-    [dispatch]
+    [dispatch, isStarted, isMyTurn]
   );
 
   const onMouseLeave = useCallback(() => dispatch(mouseLeave()), [dispatch]);

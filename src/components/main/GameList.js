@@ -9,14 +9,15 @@ function GameList({ rooms, onClickItem }) {
   return (
     <GameListBlock>
       {rooms.map((room, idx) => {
-        const { id, title, currNum, isStarted } = room;
+        const { id, title, currNum, isStarted, isPrivate } = room;
         return (
           <GameItem
             key={idx}
             title={title}
+            isPrivate={isPrivate}
             currNum={currNum}
             isStarted={isStarted}
-            onClickItem={onClickItem(id)}
+            onClickItem={onClickItem(id, isPrivate)}
           />
         );
       })}

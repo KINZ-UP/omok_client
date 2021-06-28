@@ -1,16 +1,28 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
 
 function ChatItem({ chatItem }) {
-  const { username, isSelf, message } = chatItem;
-  return (
-    <ChatItemBlock isSelf={isSelf}>
-      {!isSelf && <div className="username">{username}</div>}
-      <div className="message">{message}</div>
-    </ChatItemBlock>
-  );
+  const { type, message } = chatItem;
+  if (type === 'CHAT') {
+    const { username, isSelf, content } = message;
+    return (
+      <ChatItemBlock isSelf={isSelf}>
+        {!isSelf && <div className="username">{username}</div>}
+        <div className="message">{content}</div>
+      </ChatItemBlock>
+    );
+  }
+
+  return <NoticeBlock className="notice">{message}</NoticeBlock>;
 }
+
+const NoticeBlock = styled.div`
+  text-align: center;
+  div + & {
+    margin-top: 1rem;
+  }
+`;
 
 const ChatItemBlock = styled.div`
   ${(props) =>
@@ -30,19 +42,28 @@ const ChatItemBlock = styled.div`
   .message {
     background: ${(props) =>
       props.isSelf ? palette.darkwoodThree[0] : palette.darkwoodThree[1]};
+    width: fit-content;
     padding: 0.3rem 0.4rem;
     border-radius: 0.2rem;
   }
 
-  & + & {
+  div + & {
     margin-top: 1rem;
   }
 `;
 
-function ChatHistory({ chatHistory }) {
+function ChatHistory({ chatLog }) {
+  const chatLogBlock = useRef(null);
+  useEffect(() => {
+    if (!chatLogBlock) return;
+    chatLogBlock.current.scrollTop = chatLogBlock.current.scrollHeight;
+  }, [chatLog, chatLogBlock]);
+
   return (
-    <ChatHistoryBlock>
-      {chatHistory.map((chatItem) => ChatItem((chatItem = { chatItem })))}
+    <ChatHistoryBlock ref={chatLogBlock}>
+      {chatLog.map((chatItem, idx) => (
+        <ChatItem key={idx} chatItem={chatItem} />
+      ))}
     </ChatHistoryBlock>
   );
 }

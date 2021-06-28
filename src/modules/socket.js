@@ -12,7 +12,7 @@ export const connect = (socket) => ({
 export const disconnect = () => ({
   type: DISCONNECT,
 });
-export const openChannel = ({ name, channel }) => ({
+export const openChannel = (name, channel) => ({
   type: OPEN_CHANNEL,
   payload: { name, channel },
 });

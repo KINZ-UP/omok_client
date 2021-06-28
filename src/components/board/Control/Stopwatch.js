@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
 
-function Stopwatch({ totalSec, remainSec }) {
+function Stopwatch({ totalSec, remainSec, isStarted }) {
   const remainRatio = (remainSec / totalSec) * 100;
   return (
     <StopwatchBlock>
-      <TimerBar remainRatio={remainRatio}></TimerBar>
+      <TimerBar remainRatio={remainRatio} isStarted={isStarted}></TimerBar>
       <RemainSec>{remainSec}</RemainSec>
     </StopwatchBlock>
   );
@@ -21,7 +21,8 @@ const StopwatchBlock = styled.div`
 `;
 const TimerBar = styled.div`
   height: 1.3rem;
-  background: ${palette.darkwoodThree[0]};
+  background: ${(props) =>
+    props.isStarted ? '#b73' : palette.darkwoodThree[0]};
   width: ${(props) => `${props.remainRatio}%`};
 `;
 

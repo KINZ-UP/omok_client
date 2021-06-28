@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 import GameList from '../../components/main/GameList';
 import useSocket from '../../lib/styles/useSocket';
 import { closeModal } from '../../modules/create';
+import { openPasswordModal } from '../../modules/passwordModal';
 import { getRoomId, getRooms, requestJoin } from '../../modules/room';
 import { closeChannel } from '../../modules/socket';
 // import { socket } from '../SocketContainer';
@@ -11,15 +12,16 @@ import { closeChannel } from '../../modules/socket';
 function GameListContainer({ history }) {
   const socket = useSocket();
   const dispatch = useDispatch();
-  const { rooms, roomId, requestJoinError, username, isJoined } = useSelector(
+
+  const { rooms, requestJoinError, username } = useSelector(
     ({ room, user }) => ({
       rooms: room.rooms,
-      roomId: room.roomId,
       requestJoinError: room.requestJoinError,
       username: user.username,
-      isJoined: room.isJoined,
     })
   );
+
+  const { roomId } = useSelector(({ control }) => control);
 
   useEffect(() => {
     if (!socket) return;
@@ -29,6 +31,7 @@ function GameListContainer({ history }) {
   }, [dispatch, history, socket]);
 
   useEffect(() => {
+    console.log('roomId on main page', roomId);
     if (roomId) history.push(`/board/${roomId}`);
   }, [history, roomId]);
 
@@ -39,7 +42,10 @@ function GameListContainer({ history }) {
   }, [requestJoinError]);
 
   const onClickItem = useCallback(
-    (roomId) => () => dispatch(requestJoin(roomId)),
+    (roomId, isPrivate, password) => {
+      if (!isPrivate) return () => dispatch(requestJoin({ roomId, password }));
+      return () => dispatch(openPasswordModal(roomId));
+    },
     [dispatch]
   );
 

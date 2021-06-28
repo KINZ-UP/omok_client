@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function TempStone({ position }) {
+function TempStone({ position, onClick }) {
   if (position.x === null || position.y === null) {
     return null;
   }
-  return <TempStoneBlock position={position}></TempStoneBlock>;
+  return (
+    <TempStoneBlock position={position} onClick={onClick}></TempStoneBlock>
+  );
 }
 
 const TempStoneBlock = styled.div`

@@ -6,12 +6,14 @@ import Board from '../components/board/Board';
 import Control from '../components/board/Control';
 import { palette } from '../lib/styles/palette';
 import useSocket from '../lib/styles/useSocket';
-import { setRoomInfo } from '../modules/room';
+import { joinRoom } from '../modules/control';
+import { closeChannel } from '../modules/socket';
 
 function BoardPage({ match, history }) {
   const { roomId } = match.params;
-  let { username } = useSelector(({ user }) => ({
+  let { username, joinError } = useSelector(({ user, control }) => ({
     username: user.username,
+    joinError: control.joinError,
   }));
   const dispatch = useDispatch();
   const socket = useSocket();
@@ -20,19 +22,17 @@ function BoardPage({ match, history }) {
       alert('잘못된 접근입니다.');
       history.push('/');
     }
+    console.log(roomId, socket);
     if (!socket) return;
-
-    socket.emit('joinRoom', { roomId, username });
-    socket.on('responseJoinRoom', (resp) => {
-      if (!resp.success) {
-        alert(resp.message);
-        history.push('/');
-        return;
-      }
-
-      dispatch(setRoomInfo(resp.data));
-    });
+    console.log(roomId, username);
+    dispatch(joinRoom(roomId, username));
   }, [dispatch, history, roomId, socket, username]);
+
+  useEffect(() => {
+    if (joinError) history.push('/');
+  }, [history, joinError]);
+
+  useEffect(() => () => dispatch(closeChannel('updateTest')), [dispatch]);
 
   return (
     <BoardPageBlock>

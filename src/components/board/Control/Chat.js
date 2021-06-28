@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
+import control from '../../../modules/control';
 import ChatHistory from './ChatHistory';
 
 const chatHistory = [
@@ -46,12 +48,13 @@ const chatHistory = [
   },
 ];
 
-function Chat() {
+function Chat({ onChangeText, onSubmit }) {
+  const { chatInput, chatLog } = useSelector(({ control }) => control);
   return (
     <ChatBlock>
-      <ChatHistory chatHistory={chatHistory} />
-      <ChatInputBlock>
-        <input />
+      <ChatHistory chatLog={chatLog} />
+      <ChatInputBlock onSubmit={onSubmit}>
+        <input value={chatInput} onChange={onChangeText} />
         <button>+</button>
       </ChatInputBlock>
     </ChatBlock>

@@ -4,6 +4,7 @@ import { eventChannel, buffers } from 'redux-saga';
 const defaultMatcher = () => true;
 
 export function createSocketChannel(socket, eventType, buffer, matcher) {
+  console.log(socket, eventType);
   return eventChannel(
     (emit) => {
       const emitter = (message) => emit(message);

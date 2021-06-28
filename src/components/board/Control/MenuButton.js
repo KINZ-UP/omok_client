@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
 
 function MenuButton(props) {
-  const { children, onClick } = props;
+  const { children, onClick, disabled } = props;
   return (
-    <MenuButtonBlock onClick={onClick}>
+    <MenuButtonBlock onClick={onClick} disabled={disabled}>
       <div className="inner">{children}</div>
     </MenuButtonBlock>
   );
@@ -19,6 +19,10 @@ const MenuButtonBlock = styled.button`
   width: 100%;
   padding-top: 100%;
   position: relative;
+
+  &:disabled {
+    opacity: 0.7;
+  }
 
   .inner {
     position: absolute;

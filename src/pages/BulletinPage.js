@@ -7,6 +7,7 @@ import Responsive from '../components/common/Responsive';
 import CreateModalContainer from '../containers/main/CreateModalContainer';
 import { openModal } from '../modules/create';
 import GameListContainer from '../containers/main/GameListContainer';
+import PasswordModalContainer from '../containers/main/PasswordModalContainer';
 
 function BulletinPage() {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ function BulletinPage() {
         <GameListContainer />
       </MainBlock>
       <CreateModalContainer />
+      <PasswordModalContainer />
     </BulletinPageBlock>
   );
 }

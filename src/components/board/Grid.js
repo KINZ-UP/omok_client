@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import TempStoneContainer from '../../containers/board/TempStoneContainer';
 import { palette } from '../../lib/styles/palette';
 import { getRect } from '../../modules/board';
 import Stone from './Stone';
-import TempStone from './TempStone';
 
 function Grid({ position, onMouseMove, onMouseLeave }) {
+  const { histories } = useSelector(({ board }) => board);
   const dispatch = useDispatch();
   const gridElem = useRef(null);
   useEffect(() => {
@@ -25,10 +26,15 @@ function Grid({ position, onMouseMove, onMouseLeave }) {
         <div key={idx} className="square" />
       ))}
       <div className="stones">
-        <Stone color="white" position={{ x: 3, y: 2 }} />
-        <Stone color="black" position={{ x: 4, y: 2 }} />
+        {histories.map((position, idx) => (
+          <Stone
+            key={idx}
+            color={idx % 2 ? 'white' : 'black'}
+            position={position}
+          />
+        ))}
       </div>
-      <TempStone position={position} />
+      <TempStoneContainer position={position} />
     </GridBlock>
   );
 }
