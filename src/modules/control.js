@@ -1,6 +1,7 @@
 import {
   call,
   fork,
+  getContext,
   put,
   select,
   take,
@@ -200,6 +201,9 @@ function* leaveRoomSaga() {
   const { socket } = yield select((state) => state.socket);
   const { roomId } = yield select((state) => state.control);
   console.log('You have left the Room', roomId);
+
+  const history = yield getContext('history');
+  history.push('/');
 
   socket.emit('onLeaveRoom', { roomId });
   yield put({ type: INITIALIZE });

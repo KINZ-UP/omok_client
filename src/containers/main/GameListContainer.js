@@ -5,35 +5,19 @@ import GameList from '../../components/main/GameList';
 import useSocket from '../../lib/styles/useSocket';
 import { closeModal } from '../../modules/create';
 import { openPasswordModal } from '../../modules/passwordModal';
-import { getRoomId, getRooms, requestJoin } from '../../modules/room';
+import { getRooms, requestJoin } from '../../modules/room';
 import { closeChannel } from '../../modules/socket';
-// import { socket } from '../SocketContainer';
 
 function GameListContainer({ history }) {
   const socket = useSocket();
   const dispatch = useDispatch();
 
-  const { rooms, requestJoinError, username } = useSelector(
-    ({ room, user }) => ({
-      rooms: room.rooms,
-      requestJoinError: room.requestJoinError,
-      username: user.username,
-    })
-  );
-
-  const { roomId } = useSelector(({ control }) => control);
+  const { rooms, requestJoinError } = useSelector(({ room }) => room);
 
   useEffect(() => {
     if (!socket) return;
-    // socket.emit('requestRoomList');
     dispatch(getRooms());
-    // dispatch(getRoomId());
   }, [dispatch, history, socket]);
-
-  useEffect(() => {
-    console.log('roomId on main page', roomId);
-    if (roomId) history.push(`/board/${roomId}`);
-  }, [history, roomId]);
 
   useEffect(() => {
     if (requestJoinError) {
@@ -48,18 +32,6 @@ function GameListContainer({ history }) {
     },
     [dispatch]
   );
-
-  // useEffect(() => {
-  //   if (!socket) return;
-  //   socket.on('sendError', (message) => alert(message));
-  //   socket.on('sendRoomId', (roomId) => history.push(`/board/${roomId}`));
-  // }, [socket, dispatch, history]);
-
-  // useEffect(() => {
-  //   if (isJoined) {
-  //     history.push('/board');
-  //   }
-  // }, [history, isJoined]);
 
   useEffect(
     () => () => {

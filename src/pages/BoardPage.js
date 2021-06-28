@@ -6,7 +6,7 @@ import Board from '../components/board/Board';
 import Control from '../components/board/Control';
 import { palette } from '../lib/styles/palette';
 import useSocket from '../lib/styles/useSocket';
-import { joinRoom } from '../modules/control';
+import { joinRoom, leaveRoom } from '../modules/control';
 import { closeChannel } from '../modules/socket';
 
 function BoardPage({ match, history }) {
@@ -20,19 +20,22 @@ function BoardPage({ match, history }) {
   useEffect(() => {
     if (!roomId) {
       alert('잘못된 접근입니다.');
-      history.push('/');
+      dispatch(leaveRoom());
+      return;
     }
-    console.log(roomId, socket);
+
     if (!socket) return;
-    console.log(roomId, username);
     dispatch(joinRoom(roomId, username));
   }, [dispatch, history, roomId, socket, username]);
 
   useEffect(() => {
-    if (joinError) history.push('/');
-  }, [history, joinError]);
+    if (joinError) {
+      alert(joinError);
+      dispatch(leaveRoom());
+    }
+  }, [dispatch, history, joinError]);
 
-  useEffect(() => () => dispatch(closeChannel('updateTest')), [dispatch]);
+  useEffect(() => () => dispatch(closeChannel('update')), [dispatch]);
 
   return (
     <BoardPageBlock>

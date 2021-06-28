@@ -5,6 +5,7 @@ import {
   takeLatest,
   select,
   takeEvery,
+  getContext,
 } from 'redux-saga/effects';
 import { finishLoading, startLoading } from './loading';
 import {
@@ -114,6 +115,8 @@ function* createRoomSaga(action) {
     const roomId = yield take(channel);
 
     yield put(setRoomId(roomId));
+    const history = yield getContext('history');
+    history.push(`/board/${roomId}`);
   } catch (e) {
     console.error(e);
     yield put({ type: SET_ERROR, payload: e });
@@ -136,6 +139,8 @@ function* requestJoinSaga(action) {
 
     if (resp.success) {
       yield put({ type: SET_ROOMID, payload: roomId });
+      const history = yield getContext('history');
+      history.push(`/board/${roomId}`);
     } else {
       yield put({ type: REQUEST_JOIN_FAILURE, payload: resp.message });
     }

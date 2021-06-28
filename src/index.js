@@ -3,16 +3,22 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import rootReducer, { rootSaga } from './modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
+import { createBrowserHistory } from 'history';
 import client from './api/client';
 import { getToken, getUser } from './modules/user';
 
-const sagaMiddleware = createSagaMiddleware();
+const customHistory = createBrowserHistory();
+const sagaMiddleware = createSagaMiddleware({
+  context: {
+    history: customHistory,
+  },
+});
 const store = createStore(
   rootReducer,
   composeWithDevTools(applyMiddleware(sagaMiddleware))
@@ -28,11 +34,11 @@ if (accessToken) {
 }
 
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
+  <Router history={customHistory}>
+    <Provider store={store}>
       <App />
-    </BrowserRouter>
-  </Provider>,
+    </Provider>
+  </Router>,
   document.getElementById('root')
 );
 
