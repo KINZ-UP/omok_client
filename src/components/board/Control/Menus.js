@@ -23,6 +23,10 @@ function Menus({ match, history, isStarted }) {
   const dispatch = useDispatch();
 
   const onStart = useCallback(() => {
+    if (players.length < 2) {
+      alert('상대 플레이어가 없습니다.');
+      return;
+    }
     if (!players.every((player) => player.isReady)) {
       alert('상대 플레이어가 아직 준비하지 않았습니다.');
       return;
