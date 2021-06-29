@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Button from '../components/common/Button';
 import Header from '../components/common/Header';
@@ -10,6 +10,7 @@ import GameListContainer from '../containers/main/GameListContainer';
 import PasswordModalContainer from '../containers/main/PasswordModalContainer';
 
 function BulletinPage() {
+  const { loggedIn } = useSelector(({ user }) => user);
   const dispatch = useDispatch();
   const onOpenCreateModal = useCallback(() => {
     dispatch(openModal());
@@ -19,7 +20,9 @@ function BulletinPage() {
     <BulletinPageBlock>
       <Header />
       <MainBlock>
-        <StyledButton onClick={onOpenCreateModal}>새게임 +</StyledButton>
+        {loggedIn && (
+          <StyledButton onClick={onOpenCreateModal}>새게임 +</StyledButton>
+        )}
         <GameListContainer />
       </MainBlock>
       <CreateModalContainer />

@@ -11,14 +11,14 @@ export default function SocketContainer() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!loggedIn) return;
     const socket = io('http://localhost:8000');
-
     dispatch(connect(socket));
 
-    socket.on('connect', function () {
-      socket.emit('newUser', username);
-    });
+    if (loggedIn) {
+      socket.on('connect', function () {
+        socket.emit('newUser', username);
+      });
+    }
 
     return () => socket.disconnect();
   }, [dispatch, loggedIn, username]);

@@ -12,6 +12,7 @@ function GameListContainer({ history }) {
   const socket = useSocket();
   const dispatch = useDispatch();
 
+  const { loggedIn } = useSelector(({ user }) => user);
   const { rooms, requestJoinError } = useSelector(({ room }) => room);
 
   useEffect(() => {
@@ -27,10 +28,16 @@ function GameListContainer({ history }) {
 
   const onClickItem = useCallback(
     (roomId, isPrivate, password) => {
+      if (!loggedIn)
+        return () => {
+          alert('로그인 후 이용하실 수 있습니다.');
+          history.push('/login');
+          return;
+        };
       if (!isPrivate) return () => dispatch(requestJoin({ roomId, password }));
       return () => dispatch(openPasswordModal(roomId));
     },
-    [dispatch]
+    [dispatch, history, loggedIn]
   );
 
   useEffect(
