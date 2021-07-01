@@ -209,6 +209,7 @@ function* joinRoomSaga(action) {
     }
   } else {
     yield put({ type: JOIN_ROOM_FAILURE, payload: resp.message });
+    yield put({ type: LEAVE_ROOM });
   }
 }
 
