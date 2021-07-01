@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
 
-function Stopwatch({ totalSec, remainSec, isStarted }) {
-  const remainRatio = (remainSec / totalSec) * 100;
+function Stopwatch({ totalTime, remainTime, isStarted }) {
+  const remainRatio = useMemo(
+    () => (remainTime / totalTime) * 100,
+    [remainTime, totalTime]
+  );
+
   return (
     <StopwatchBlock>
       <TimerBar remainRatio={remainRatio} isStarted={isStarted}></TimerBar>
-      <RemainSec>{remainSec}</RemainSec>
+      <RemainSec>{remainTime}</RemainSec>
     </StopwatchBlock>
   );
 }
@@ -35,4 +39,4 @@ const RemainSec = styled.div`
   transform: translateY(-50%);
 `;
 
-export default Stopwatch;
+export default React.memo(Stopwatch);

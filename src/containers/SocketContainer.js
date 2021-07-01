@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
-import { connect, disconnect } from '../modules/socket';
+import { connect } from '../modules/socket';
 import BoardPage from '../pages/BoardPage';
 import BulletinPage from '../pages/BulletinPage';
 
-export default function SocketContainer() {
+function SocketContainer() {
   const { loggedIn, username } = useSelector(({ user }) => user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const socket = io('http://localhost:8000');
-    dispatch(connect(socket));
 
     if (loggedIn) {
+      dispatch(connect(socket));
       socket.on('connect', function () {
         socket.emit('newUser', username);
       });
@@ -30,3 +30,5 @@ export default function SocketContainer() {
     </>
   );
 }
+
+export default React.memo(SocketContainer);

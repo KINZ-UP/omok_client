@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Chat from '../../components/board/Control/Chat';
 import { changeMessage, sendMessage } from '../../modules/control';
 
 function ChatContainer() {
+  const { chatInput, chatLog } = useSelector(({ control }) => control);
   const dispatch = useDispatch();
+
   const onChangeText = useCallback(
     (e) => dispatch(changeMessage(e.target.value)),
     [dispatch]
@@ -17,7 +19,14 @@ function ChatContainer() {
     [dispatch]
   );
 
-  return <Chat onChangeText={onChangeText} onSubmit={onSubmit} />;
+  return (
+    <Chat
+      chatInput={chatInput}
+      chatLog={chatLog}
+      onChangeText={onChangeText}
+      onSubmit={onSubmit}
+    />
+  );
 }
 
 export default ChatContainer;

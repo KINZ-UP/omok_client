@@ -36,13 +36,14 @@ const START_GAME = 'control/START_GAME';
 const REQUEST_SURRENDER = 'control/REQUEST_SURRENDER';
 const END_GAME = 'control/END_GAME';
 const REQUEST_PUT_STONE = 'control/REQUEST_PUT_STONE';
-const PUT_STONE = 'control/PUT_STONE';
 const REQUEST_ROLLBACK = 'control/REQUEST_ROLLBACK';
 const GET_ROLLBACK_REQUEST = 'control/GET_ROLLBACK_REQUEST';
 const APPROVE_ROLLBACK = 'control/APPROVE_ROLLBACK';
 const DECLINE_ROLLBACK = 'control/DECLINE_ROLLBACK';
 const INIT_ROLLBACK_REQUEST = 'control/INIT_ROLLBACK_REQUEST';
 const UPDATE_TURN = 'control/UPDATE_TURN';
+const UPDATE_TIMER = 'control/UPDATE_TIMER';
+const RESET_TIMER = 'control/RESET_TIMER';
 
 export const initialize = () => ({
   type: INITIALIZE,
@@ -76,9 +77,9 @@ export const toggleReady = () => ({
 export const requestStartGame = () => ({
   type: REQUEST_START_GAME,
 });
-export const startGame = () => ({
-  type: START_GAME,
-});
+// export const startGame = () => ({
+//   type: START_GAME,
+// });
 export const requestSurrender = () => ({
   type: REQUEST_SURRENDER,
 });
@@ -102,6 +103,9 @@ export const updateTurn = (idx) => ({
   type: UPDATE_TURN,
   payload: idx,
 });
+export const resetTimer = () => ({
+  type: RESET_TIMER,
+});
 
 export function* openControlChannelSaga() {
   const { socket } = yield select((state) => state.socket);
@@ -109,6 +113,8 @@ export function* openControlChannelSaga() {
 
   channel = yield call(createSocketChannel, socket, 'update');
   yield put(openChannel('update', channel));
+
+  console.log('control channel has openned');
 
   try {
     while (true) {
@@ -141,7 +147,9 @@ export function* openControlChannelSaga() {
         case 'START': {
           const { turnIdx } = action.payload;
           yield put(initHistory());
+          yield put({ type: RESET_TIMER });
           yield fork(openGameChannelSaga);
+          yield fork(openTimerChannelSaga);
           yield put({ type: START_GAME, payload: { turnIdx } });
           break;
         }
@@ -154,6 +162,7 @@ export function* openControlChannelSaga() {
           const { winnerIdx } = action.payload;
           yield put({ type: END_GAME, payload: { winnerIdx } });
           yield put(closeChannel('game'));
+          yield put(closeChannel('timer'));
           break;
         }
         case 'REQUEST_ROLLBACK': {
@@ -184,6 +193,23 @@ export function* openControlChannelSaga() {
   }
 }
 
+export function* openTimerChannelSaga() {
+  const { socket } = yield select((state) => state.socket);
+  let channel;
+
+  channel = yield call(createSocketChannel, socket, 'timer');
+  yield put(openChannel('timer', channel));
+
+  try {
+    while (true) {
+      const remainTime = yield take(channel);
+      yield put({ type: UPDATE_TIMER, payload: { remainTime } });
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 function* joinRoomSaga(action) {
   const { roomId, username } = action.payload;
   yield put({ type: SET_ROOMID, payload: { roomId } });
@@ -193,7 +219,6 @@ function* joinRoomSaga(action) {
   socket.emit('joinRoom', { roomId: roomId, username: username });
   channel = yield call(createSocketChannel, socket, 'responseJoinRoom');
   const resp = yield take(channel);
-  console.log(resp);
 
   if (resp.success) {
     const { players, isStarted, turnIdx, history } = resp.data;
@@ -206,6 +231,7 @@ function* joinRoomSaga(action) {
     if (isStarted) {
       yield put(getHistory(history));
       yield fork(openGameChannelSaga);
+      yield fork(openTimerChannelSaga);
     }
   } else {
     yield put({ type: JOIN_ROOM_FAILURE, payload: resp.message });
@@ -314,6 +340,8 @@ const initialState = {
   isMyTurn: false,
   rollbackRequest: false,
   joinError: null,
+  totalTime: 30,
+  remainTime: 30,
 };
 
 function control(state = initialState, action) {
@@ -466,6 +494,20 @@ function control(state = initialState, action) {
         rollbackRequest: false,
       };
     }
+    case RESET_TIMER: {
+      return {
+        ...state,
+        remainTime: state.totalTime,
+      };
+    }
+    case UPDATE_TIMER: {
+      const { remainTime } = action.payload;
+      return {
+        ...state,
+        remainTime,
+      };
+    }
+
     // case APPROVE_ROLLBACK_REQUEST: {
     //   return {
     //     ...state,

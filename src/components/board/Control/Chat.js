@@ -1,55 +1,9 @@
-import React, { useCallback, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import styled from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
-import control from '../../../modules/control';
 import ChatHistory from './ChatHistory';
 
-const chatHistory = [
-  {
-    username: 'hello',
-    isSelf: true,
-    message: '안녕하세요',
-  },
-  {
-    username: '떨이',
-    isSelf: false,
-    message: '안녕하세요',
-  },
-  {
-    username: 'hello',
-    isSelf: true,
-    message: '안녕하세요',
-  },
-  {
-    username: '떨이',
-    isSelf: false,
-    message: '안녕하세요',
-  },
-  {
-    username: 'hello',
-    isSelf: true,
-    message: '안녕하세요',
-  },
-  {
-    username: '떨이',
-    isSelf: false,
-    message: '안녕하세요',
-  },
-  {
-    username: 'hello',
-    isSelf: true,
-    message: '안녕하세요',
-  },
-  {
-    username: '떨이',
-    isSelf: false,
-    message: '안녕하세요',
-  },
-];
-
-function Chat({ onChangeText, onSubmit }) {
-  const { chatInput, chatLog } = useSelector(({ control }) => control);
+function Chat({ chatInput, chatLog, onChangeText, onSubmit }) {
   return (
     <ChatBlock>
       <ChatHistory chatLog={chatLog} />

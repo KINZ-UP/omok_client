@@ -1,52 +1,21 @@
-import React, { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import ChatContainer from '../../../containers/board/ChatContainer';
-import { palette } from '../../../lib/styles/palette';
-import useSocket from '../../../lib/styles/useSocket';
-import { approveRollback, declineRollback } from '../../../modules/control';
-import room, { initializeRoomId, leaveRoom } from '../../../modules/room';
-import Button from '../../common/Button';
-import Chat from './Chat';
-import MenuButton from './MenuButton';
-import Menus from './Menus';
 import PlayerList from './PlayerList';
-import Stopwatch from './Stopwatch';
+import MenusContainer from '../../../containers/board/MenusContainer';
+import StopwatchContainer from '../../../containers/board/StopwatchContainer';
+import { palette } from '../../../lib/styles/palette';
 
-function Control({ history, match }) {
-  const { roomId } = match.params;
-  const {
-    title,
-    isJoined,
-    players,
-    chatLog,
-    isStarted,
-    turnIdx,
-    rollbackRequest,
-  } = useSelector(({ control }) => control);
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    console.log('rollbackRequest:', rollbackRequest);
-    if (!rollbackRequest) return;
-    const result = window.confirm(
-      '상대방이 무르기를 요청하였습니다. 수락하시겠습니까?'
-    );
-    if (result) {
-      dispatch(approveRollback());
-      return;
-    }
-    dispatch(declineRollback());
-  }, [dispatch, rollbackRequest]);
+function Control({ isJoined, players, turnIdx }) {
   if (!isJoined) return <ControlBlock />;
 
   return (
     <ControlBlock>
-      <Stopwatch totalSec={30} remainSec={20} isStarted={isStarted} />
+      <StopwatchContainer />
       <PlayerList players={players} turnIdx={turnIdx} />
-      <ChatContainer chatLog={chatLog} />
-      <Menus isStarted={isStarted} />
+      <ChatContainer />
+      <MenusContainer />
     </ControlBlock>
   );
 }
