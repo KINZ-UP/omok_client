@@ -31,6 +31,7 @@ function Grid({ position, onMouseMove, onMouseLeave }) {
             key={idx}
             color={idx % 2 ? 'white' : 'black'}
             position={position}
+            isLast={idx === histories.length - 1}
           />
         ))}
       </div>

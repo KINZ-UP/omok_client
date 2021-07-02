@@ -1,8 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-function Stone({ color, position }) {
-  return <StoneBlock color={color} position={position}></StoneBlock>;
+function Stone({ color, position, isLast }) {
+  return <StoneBlock color={color} position={position} isLast={isLast} />;
 }
 
 const StoneBlock = styled.div`
@@ -21,5 +21,21 @@ const StoneBlock = styled.div`
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
 
   z-index: 1;
+
+  ${(props) =>
+    props.isLast &&
+    css`
+      &::after {
+        content: '';
+        display: block;
+        margin-top: 50%;
+        margin-left: 50%;
+        width: 35%;
+        height: 35%;
+        background-color: ${props.color === 'white' ? '#000' : '#fff'};
+        clip-path: polygon(100% 0, 0 100%, 0 0);
+      }
+    `}
 `;
-export default Stone;
+
+export default React.memo(Stone);
