@@ -114,8 +114,6 @@ export function* openControlChannelSaga() {
   channel = yield call(createSocketChannel, socket, 'update');
   yield put(openChannel('update', channel));
 
-  console.log('control channel has openned');
-
   try {
     while (true) {
       const action = yield take(channel);

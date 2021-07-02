@@ -16,8 +16,6 @@ function ControlContainer({ match }) {
   const dispatch = useDispatch();
   const socket = useSocket();
 
-  useEffect(() => console.log(socket), [socket]);
-
   useEffect(() => {
     if (!roomId) {
       alert('잘못된 접근입니다.');
@@ -27,7 +25,7 @@ function ControlContainer({ match }) {
 
     if (!socket) return;
     if (!username) return;
-    console.log(username);
+
     dispatch(joinRoom(roomId, username));
   }, [dispatch, roomId, socket, username]);
 
