@@ -1,7 +1,7 @@
 import { put, throttle } from '@redux-saga/core/effects';
 import { call, select, take, takeLatest } from 'redux-saga/effects';
 import { createSocketChannel } from '../lib/styles/createSocketChannel';
-import { updateTurn } from './control';
+import { resetTimer, updateTurn } from './control';
 import { openChannel } from './socket';
 
 const GET_RECT = 'board/GET_RECT';
@@ -70,9 +70,9 @@ export function* openGameChannelSaga() {
       switch (action.type) {
         case 'PUT_STONE': {
           const { x, y, turnIdx } = action.payload;
-          console.log(x, y, turnIdx);
           yield put({ type: PUT_STONE, payload: { x, y } });
           yield put(updateTurn(turnIdx));
+          yield put(resetTimer());
           break;
         }
         case 'PUT_STONE_ERROR': {
