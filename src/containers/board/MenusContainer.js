@@ -11,7 +11,10 @@ import {
 } from '../../modules/control';
 
 function MenusContainer({ history }) {
-  const { isOwner, players, isStarted } = useSelector(({ control }) => control);
+  const { isOwner, players, myIdx, isStarted } = useSelector(
+    ({ control }) => control
+  );
+  const isReady = useMemo(() => players[myIdx].isReady, [myIdx, players]);
 
   const dispatch = useDispatch();
 
@@ -56,6 +59,7 @@ function MenusContainer({ history }) {
     <Menus
       isOwner={isOwner}
       isStarted={isStarted}
+      isReady={isReady}
       onStart={onStart}
       onToggleReady={onToggleReady}
       onSurrender={onSurrender}
