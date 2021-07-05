@@ -39,7 +39,7 @@ const ModalWindow = styled.div`
   .modal-header {
     display: flex;
     justify-content: flex-end;
-    padding-bottom: 25px;
+    padding-bottom: 1rem;
   }
 `;
 

@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
 
 function MenuButton(props) {
-  const { children, onClick, disabled } = props;
+  const { name, onClick, disabled } = props;
   return (
     <MenuButtonBlock onClick={onClick} disabled={disabled}>
-      <div className="inner">{children}</div>
+      <div className="inner">{name}</div>
     </MenuButtonBlock>
   );
 }

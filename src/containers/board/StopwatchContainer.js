@@ -4,9 +4,11 @@ import Stopwatch from '../../components/board/Control/Stopwatch';
 import { resetTimer } from '../../modules/control';
 
 function StopwatchContainer() {
-  const { remainTime, totalTime, isStarted } = useSelector(
-    ({ control }) => control
-  );
+  const {
+    remainTime,
+    setting: { totalTime },
+    isStarted,
+  } = useSelector(({ control }) => control);
   const dispatch = useDispatch();
 
   useEffect(() => dispatch(resetTimer()), [dispatch]);

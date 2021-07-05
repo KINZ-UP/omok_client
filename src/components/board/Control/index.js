@@ -6,6 +6,7 @@ import PlayerList from './PlayerList';
 import MenusContainer from '../../../containers/board/MenusContainer';
 import StopwatchContainer from '../../../containers/board/StopwatchContainer';
 import { palette } from '../../../lib/styles/palette';
+import SettingModalContainer from '../../../containers/board/SettingModalContainer';
 
 function Control({ isJoined, players, turnIdx }) {
   if (!isJoined) return <ControlBlock />;
@@ -16,6 +17,7 @@ function Control({ isJoined, players, turnIdx }) {
       <PlayerList players={players} turnIdx={turnIdx} />
       <ChatContainer />
       <MenusContainer />
+      <SettingModalContainer />
     </ControlBlock>
   );
 }

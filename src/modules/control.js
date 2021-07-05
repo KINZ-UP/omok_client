@@ -11,9 +11,9 @@ import {
 import { createSocketChannel } from '../lib/styles/createSocketChannel';
 import {
   getHistory,
+  initGame,
   initHistory,
   openGameChannelSaga,
-  rollback,
 } from './board';
 import { closeChannel, openChannel } from './socket';
 
@@ -29,6 +29,10 @@ const SEND_MESSAGE = 'control/SEND_MESSAGE';
 const UPDATE_MESSAGE = 'control/UPDATE_MESSAGE';
 const CHANGE_MESSAGE = 'control/CHANGE_MESSAGE';
 const INIT_MESSAGE = 'control/INIT_MESSAGE';
+const OPEN_SETTING = 'control/OPEN_SETTING';
+const CLOSE_SETTING = 'control/CLOSE_SETTING';
+const REQUEST_SETTING = 'control/REQUEST_SETTING';
+const UPDATE_SETTING = 'control/UPDATE_SETTING';
 const TOGGLE_READY = 'control/TOGGLE_READY';
 const UPDATE_READY = 'control/UPDATE_READY';
 const REQUEST_START_GAME = 'control/REQUEST_START_GAME';
@@ -77,9 +81,16 @@ export const toggleReady = () => ({
 export const requestStartGame = () => ({
   type: REQUEST_START_GAME,
 });
-// export const startGame = () => ({
-//   type: START_GAME,
-// });
+export const openSetting = () => ({
+  type: OPEN_SETTING,
+});
+export const closeSetting = () => ({
+  type: CLOSE_SETTING,
+});
+export const confirmSetting = (options) => ({
+  type: REQUEST_SETTING,
+  payload: options,
+});
 export const requestSurrender = () => ({
   type: REQUEST_SURRENDER,
 });
@@ -142,9 +153,22 @@ export function* openControlChannelSaga() {
           yield put({ type: UPDATE_READY, payload: username });
           break;
         }
+        case 'SETTING': {
+          const { totalTime, numOfSection } = action.payload;
+          yield put({
+            type: UPDATE_SETTING,
+            payload: { totalTime, numOfSection },
+          });
+          yield put(initHistory());
+          yield put({ type: RESET_TIMER });
+          break;
+        }
         case 'START': {
           const { turnIdx } = action.payload;
-          yield put(initHistory());
+          const { numOfSection } = yield select(
+            (state) => state.control.setting
+          );
+          yield put(initGame(numOfSection));
           yield put({ type: RESET_TIMER });
           yield fork(openGameChannelSaga);
           yield fork(openTimerChannelSaga);
@@ -161,20 +185,6 @@ export function* openControlChannelSaga() {
           yield put({ type: END_GAME, payload: { winnerIdx } });
           yield put(closeChannel('game'));
           yield put(closeChannel('timer'));
-          break;
-        }
-        case 'REQUEST_ROLLBACK': {
-          yield put({ type: GET_ROLLBACK_REQUEST });
-          break;
-        }
-        case 'ROLLBACK': {
-          const { remainLength } = action.payload;
-          yield put(rollback(remainLength));
-          break;
-        }
-        case 'DECLINE_ROLLBACK': {
-          console.log('rollback request has been declined');
-          alert('거절!!');
           break;
         }
         case 'ANOTHER_CONNECTION': {
@@ -219,10 +229,19 @@ function* joinRoomSaga(action) {
   const resp = yield take(channel);
 
   if (resp.success) {
-    const { players, isStarted, turnIdx, history } = resp.data;
+    const { players, isStarted, turnIdx, totalTime, numOfSection, history } =
+      resp.data;
+    console.log(totalTime, numOfSection);
     yield put({
       type: JOIN_ROOM_SUCCESS,
-      payload: { players, isStarted, turnIdx, username },
+      payload: {
+        players,
+        isStarted,
+        turnIdx,
+        totalTime,
+        numOfSection,
+        username,
+      },
     });
     yield fork(openControlChannelSaga);
 
@@ -307,6 +326,15 @@ function* declineRollbackSaga() {
   socket.emit('declineRollback', { roomId });
 }
 
+function* confirmSettingSaga(action) {
+  const { socket } = yield select((state) => state.socket);
+  const { roomId } = yield select((state) => state.control);
+
+  const { totalTime, numOfSection } = action.payload;
+  console.log('You have requested update setting');
+  yield socket.emit('updateSetting', { roomId, totalTime, numOfSection });
+}
+
 function* surrenderSaga() {
   const { socket } = yield select((state) => state.socket);
   const { roomId, myIdx } = yield select((state) => state.control);
@@ -323,6 +351,7 @@ export function* controlSaga() {
   yield takeLatest(REQUEST_ROLLBACK, rollbackSaga);
   yield takeLatest(APPROVE_ROLLBACK, approveRollbackSaga);
   yield takeLatest(DECLINE_ROLLBACK, declineRollbackSaga);
+  yield takeLatest(REQUEST_SETTING, confirmSettingSaga);
 }
 
 const initialState = {
@@ -338,8 +367,12 @@ const initialState = {
   isMyTurn: false,
   rollbackRequest: false,
   joinError: null,
-  totalTime: 30,
   remainTime: 30,
+  setting: {
+    isOpen: false,
+    totalTime: 30,
+    numOfSection: null,
+  },
 };
 
 function control(state = initialState, action) {
@@ -355,15 +388,17 @@ function control(state = initialState, action) {
       };
     }
     case JOIN_ROOM_SUCCESS: {
-      const { title, players, isStarted, turnIdx, username } = action.payload;
+      const { players, isStarted, turnIdx, totalTime, numOfSection, username } =
+        action.payload;
       const myIdx = players.findIndex((player) => player.username === username);
       const { isOwner } = players[myIdx];
+
+      console.log(numOfSection, totalTime);
       return {
         ...state,
         isJoined: true,
         joinError: null,
         isOwner,
-        title,
         players,
         isStarted,
         myIdx,
@@ -373,6 +408,11 @@ function control(state = initialState, action) {
           type: 'NOTICE',
           message: `- ${username}님이 접속하였습니다 -`,
         }),
+        setting: {
+          ...state.setting,
+          totalTime,
+          numOfSection,
+        },
       };
     }
     case JOIN_ROOM_FAILURE: {
@@ -495,7 +535,7 @@ function control(state = initialState, action) {
     case RESET_TIMER: {
       return {
         ...state,
-        remainTime: state.totalTime,
+        remainTime: state.setting.totalTime,
       };
     }
     case UPDATE_TIMER: {
@@ -503,6 +543,35 @@ function control(state = initialState, action) {
       return {
         ...state,
         remainTime,
+      };
+    }
+    case OPEN_SETTING: {
+      return {
+        ...state,
+        setting: {
+          ...state.setting,
+          isOpen: true,
+        },
+      };
+    }
+    case CLOSE_SETTING: {
+      return {
+        ...state,
+        setting: {
+          ...state.setting,
+          isOpen: false,
+        },
+      };
+    }
+    case UPDATE_SETTING: {
+      const { totalTime, numOfSection } = action.payload;
+      return {
+        ...state,
+        setting: {
+          isOpen: false,
+          totalTime,
+          numOfSection,
+        },
       };
     }
 

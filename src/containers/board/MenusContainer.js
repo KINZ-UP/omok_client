@@ -4,21 +4,14 @@ import { withRouter } from 'react-router';
 import Menus from '../../components/board/Control/Menus';
 import {
   leaveRoom,
-  requestRollback,
+  openSetting,
   requestStartGame,
   requestSurrender,
   toggleReady,
 } from '../../modules/control';
 
 function MenusContainer({ history }) {
-  const { isOwner, players, myIdx, isStarted } = useSelector(
-    ({ control }) => control
-  );
-  const { histories } = useSelector(({ board }) => board);
-  const minCount = useMemo(() => {
-    const { isFirst } = players[myIdx];
-    return isFirst ? 1 : 2;
-  }, [players, myIdx]);
+  const { isOwner, players, isStarted } = useSelector(({ control }) => control);
 
   const dispatch = useDispatch();
 
@@ -33,15 +26,17 @@ function MenusContainer({ history }) {
     }
     dispatch(requestStartGame());
   }, [dispatch, players]);
+
   const onToggleReady = useCallback(() => {
     dispatch(toggleReady());
   }, [dispatch]);
-  const onRollback = useCallback(() => {
-    dispatch(requestRollback());
-  }, [dispatch]);
+
+  const onOpenSetting = useCallback(() => dispatch(openSetting()), [dispatch]);
+
   const onSurrender = useCallback(() => {
     dispatch(requestSurrender());
   }, [dispatch]);
+
   const onLeaveRoom = useCallback(() => {
     let flag = true;
     if (isStarted) {
@@ -53,17 +48,20 @@ function MenusContainer({ history }) {
     history.push('/');
   }, [dispatch, history, isStarted]);
 
+  const canChangeSetting = useMemo(
+    () => isOwner && !players.every((player) => player.isReady),
+    [isOwner, players]
+  );
   return (
     <Menus
       isOwner={isOwner}
       isStarted={isStarted}
-      histories={histories}
-      minCount={minCount}
       onStart={onStart}
       onToggleReady={onToggleReady}
-      onRollback={onRollback}
       onSurrender={onSurrender}
+      onOpenSetting={onOpenSetting}
       onLeaveRoom={onLeaveRoom}
+      canChangeSetting={canChangeSetting}
     />
   );
 }

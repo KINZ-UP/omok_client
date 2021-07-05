@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import AspectRatioBox from '../components/board/AspectRatioBox';
-import Board from '../components/board/Board';
+import BoardContainer from '../containers/board/BoardContainer';
 import ControlContainer from '../containers/board/ControlContainer';
 import { palette } from '../lib/styles/palette';
 
@@ -9,7 +9,7 @@ function BoardPage() {
   return (
     <BoardPageBlock>
       <AspectRatioBox>
-        <Board />
+        <BoardContainer />
         <ControlContainer />
       </AspectRatioBox>
     </BoardPageBlock>

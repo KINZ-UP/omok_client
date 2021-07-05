@@ -10,12 +10,14 @@ const MOUSE_MOVE_THROTTLE = 'board/MOUSE_MOVE_THROTTLE';
 const MOUSE_LEAVE = 'board/MOUSE_LEAVE';
 const MOUSE_LEAVE_THROTTLE = 'board/MOUSE_LEAVE_THROTTLE';
 
+const INIT_GAME = 'board/INIT_GAME';
 const INIT_HISTORY = 'board/INIT_HISTORY';
 const GET_HISTORY = 'board/GET_HISTORY';
 const REQUEST_PUT_STONE = 'board/REQUEST_PUT_STONE';
 const PUT_STONE = 'board/PUT_STONE';
 const PUT_STONE_ERROR = 'board/PUT_STONE_FAILURE';
 const ROLLBACK = 'board/ROLLBACK';
+const UPDATE_NUM_OF_SECTION = 'board/UPDATE_NUM_OF_SECTION';
 
 export const getRect = (rect) => ({
   type: GET_RECT,
@@ -28,6 +30,10 @@ export const mouseMove = (event) => ({
 export const mouseLeave = () => ({
   type: MOUSE_LEAVE,
 });
+export const initGame = (num) => ({
+  type: INIT_GAME,
+  payload: num,
+});
 export const initHistory = () => ({
   type: INIT_HISTORY,
 });
@@ -39,13 +45,17 @@ export const requestPutStone = (position) => ({
   type: REQUEST_PUT_STONE,
   payload: { position },
 });
+export const updateNumOfSection = (num) => ({
+  type: UPDATE_NUM_OF_SECTION,
+  payload: num,
+});
 export const rollback = (remainLength) => ({
   type: ROLLBACK,
   payload: { remainLength },
 });
 
 const initialState = {
-  number: 10,
+  numOfSection: null,
   rect: null,
   stones: [],
   histories: [],
@@ -123,8 +133,12 @@ function board(state = initialState, action) {
       return {
         ...state,
         mouseCoord: {
-          x: Math.round(((clientX - state.rect.x) / state.rect.width) * 10),
-          y: Math.round(((clientY - state.rect.y) / state.rect.height) * 10),
+          x: Math.round(
+            ((clientX - state.rect.x) / state.rect.width) * state.numOfSection
+          ),
+          y: Math.round(
+            ((clientY - state.rect.y) / state.rect.height) * state.numOfSection
+          ),
         },
       };
     }
@@ -136,11 +150,18 @@ function board(state = initialState, action) {
           y: null,
         },
       };
-    case INIT_HISTORY:
+    case INIT_GAME:
+      return {
+        ...state,
+        numOfSection: action.payload,
+        histories: [],
+      };
+    case INIT_HISTORY: {
       return {
         ...state,
         histories: [],
       };
+    }
     case GET_HISTORY: {
       return {
         ...state,
@@ -160,6 +181,12 @@ function board(state = initialState, action) {
     case PUT_STONE_ERROR: {
       console.log(action.payload);
       return state;
+    }
+    case UPDATE_NUM_OF_SECTION: {
+      return {
+        ...state,
+        numOfSection: action.payload,
+      };
     }
     case ROLLBACK: {
       const { remainLength } = action.payload;

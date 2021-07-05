@@ -1,28 +1,37 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import TempStoneContainer from '../../containers/board/TempStoneContainer';
 import { palette } from '../../lib/styles/palette';
 import { getRect } from '../../modules/board';
 import Stone from './Stone';
 
-function Grid({ position, onMouseMove, onMouseLeave }) {
+function Grid({
+  sizeRatio,
+  numOfSection,
+  position,
+  onMouseMove,
+  onMouseLeave,
+}) {
   const { histories } = useSelector(({ board }) => board);
   const dispatch = useDispatch();
   const gridElem = useRef(null);
+
+  // The size of grid rectangle should be re-calulated whenever numOfSection is modified
   useEffect(() => {
     if (gridElem) {
       dispatch(getRect(gridElem.current));
     }
-  }, [dispatch, gridElem]);
+  }, [dispatch, gridElem, numOfSection]);
 
   return (
     <GridBlock
       ref={gridElem}
+      numOfSection={numOfSection}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {Array.from({ length: 100 }).map((_, idx) => (
+      {Array.from({ length: numOfSection ** 2 }).map((_, idx) => (
         <div key={idx} className="square" />
       ))}
       <div className="stones">
@@ -32,10 +41,11 @@ function Grid({ position, onMouseMove, onMouseLeave }) {
             color={idx % 2 ? 'white' : 'black'}
             position={position}
             isLast={idx === histories.length - 1}
+            sizeRatio={sizeRatio}
           />
         ))}
       </div>
-      <TempStoneContainer position={position} />
+      <TempStoneContainer position={position} sizeRatio={sizeRatio} />
     </GridBlock>
   );
 }
@@ -45,8 +55,10 @@ const GridBlock = styled.div`
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
+  ${(props) => css`
+    grid-template-columns: repeat(${props.numOfSection}, 1fr);
+    grid-template-rows: repeat(${props.numOfSection}, 1fr);
+  `}
   border: 2px solid ${palette.darkwoodThree[4]};
   .square {
     border: 1px solid ${palette.darkwoodThree[4]};
