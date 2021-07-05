@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import X from '../../assets/icons/X.svg';
 
 function Modal(props) {
   const { isOpen, children, onClose } = props;
@@ -10,7 +11,7 @@ function Modal(props) {
       <ModalWindow {...props}>
         <div className="modal-header">
           <button className="close-btn" onClick={onClose}>
-            X
+            <img src={X} alt="X" />
           </button>
         </div>
         {children}

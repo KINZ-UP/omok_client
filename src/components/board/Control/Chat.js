@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
 import ChatHistory from './ChatHistory';
+import ArrowReturnLeft from '../../../assets/icons/ArrowReturnLeft.svg';
 
 function Chat({ chatInput, chatLog, onChangeText, onSubmit }) {
   return (
@@ -9,7 +10,9 @@ function Chat({ chatInput, chatLog, onChangeText, onSubmit }) {
       <ChatHistory chatLog={chatLog} />
       <ChatInputBlock onSubmit={onSubmit}>
         <input value={chatInput} onChange={onChangeText} />
-        <button>+</button>
+        <button>
+          <img src={ArrowReturnLeft} alt="return" />
+        </button>
       </ChatInputBlock>
     </ChatBlock>
   );
@@ -40,6 +43,7 @@ const ChatInputBlock = styled.form`
     background: ${palette.darkwoodThree[3]};
     font-size: 1.3rem;
     color: #fff;
+    padding-top: 0.3rem;
   }
 `;
 
