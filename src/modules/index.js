@@ -1,5 +1,6 @@
 import { all } from '@redux-saga/core/effects';
 import { combineReducers } from 'redux';
+import common from './common';
 import auth, { authSaga } from './auth';
 import user, { userSaga } from './user';
 import loading from './loading';
@@ -11,6 +12,7 @@ import control, { controlSaga } from './control';
 import passwordModal from './passwordModal';
 
 const rootReducer = combineReducers({
+  common,
   auth,
   user,
   loading,
