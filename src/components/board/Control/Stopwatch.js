@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
 
-function Stopwatch({ totalTime, remainTime, isStarted }) {
+function Stopwatch({ totalTime, remainTime, isStarted, isMyTurn }) {
   const remainRatio = useMemo(
     () => (remainTime / totalTime) * 100,
     [remainTime, totalTime]
@@ -10,7 +10,7 @@ function Stopwatch({ totalTime, remainTime, isStarted }) {
 
   return (
     <StopwatchBlock>
-      <TimerBar remainRatio={remainRatio} isStarted={isStarted}></TimerBar>
+      <TimerBar remainRatio={remainRatio} isStarted={isMyTurn}></TimerBar>
       <RemainSec>{remainTime}</RemainSec>
     </StopwatchBlock>
   );

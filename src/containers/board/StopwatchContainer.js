@@ -8,6 +8,7 @@ function StopwatchContainer() {
     remainTime,
     setting: { totalTime },
     isStarted,
+    isMyTurn,
   } = useSelector(({ control }) => control);
   const dispatch = useDispatch();
 
@@ -18,6 +19,7 @@ function StopwatchContainer() {
       remainTime={remainTime}
       totalTime={totalTime}
       isStarted={isStarted}
+      isMyTurn={isMyTurn}
     />
   );
 }
