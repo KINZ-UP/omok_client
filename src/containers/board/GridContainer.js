@@ -17,6 +17,7 @@ function GridContainer({ sizeRatio, numOfSection }) {
   );
 
   const onMouseLeave = useCallback(() => dispatch(mouseLeave()), [dispatch]);
+
   return (
     <Grid
       numOfSection={numOfSection}

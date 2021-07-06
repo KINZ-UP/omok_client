@@ -24,6 +24,10 @@ function Grid({
     }
   }, [dispatch, gridElem, numOfSection]);
 
+  useEffect(() => {
+    window.onresize = () => dispatch(getRect(gridElem.current));
+  }, [dispatch]);
+
   return (
     <GridBlock
       ref={gridElem}
