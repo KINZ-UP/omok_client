@@ -14,9 +14,10 @@ function ChatContainer() {
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
+      if (!chatInput.trim()) return;
       dispatch(sendMessage());
     },
-    [dispatch]
+    [dispatch, chatInput]
   );
 
   return (

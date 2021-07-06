@@ -1,16 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
 import { create, createRoom, setRoomId } from '../../modules/room';
 import { closeModal, setDefaultTitle } from '../../modules/create';
 import CreateModal from '../../components/main/CreateModal';
-import useSocket from '../../lib/styles/useSocket';
 
 const defaultTitles = [
   '오목 한 겜 하실분!',
