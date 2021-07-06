@@ -23,10 +23,11 @@ function Player({ player, isTurn, isSelf }) {
 
 const PlayerBlock = styled.div`
   width: 100%;
-  height: 2.5rem;
+  height: 2.5em;
+  min-height: 0;
   display: flex;
   align-items: center;
-  padding: 0 0.5rem;
+  padding: 0 0.5em;
   color: #fff;
   font-weight: bold;
 
@@ -36,24 +37,27 @@ const PlayerBlock = styled.div`
       css`
         text-decoration: underline;
       `}
+
+    max-width: 4em;
+    text-overflow: ellipsis;
   }
   .state {
     margin-left: auto;
     background-color: ${(props) =>
       props.isReady ? palette.darkwoodThree[0] : palette.darkwoodThree[1]};
-    padding: 3px 5px;
-    border-radius: 3px;
+    padding: 0.2em 0.4em;
+    border-radius: 0.2em;
   }
 `;
 
 const TurnMarkerBlock = styled.div`
-  width: 1rem;
-  height: 1rem;
+  width: 1em;
+  height: 1em;
   background: ${(props) => (props.isFirst ? 'black' : 'white')};
-  border-width: 3px;
+  border-width: 0.2em;
   border-style: solid;
   border-color: ${(props) => (props.isTurn ? '#b73' : palette.gray[5])};
-  border-radius: 1rem;
+  border-radius: 1em;
   margin-right: 0.5rem;
 `;
 
@@ -71,6 +75,9 @@ function PlayerList({ players, turnIdx }) {
 
 const PlayerListBlock = styled.div`
   background-color: ${palette.darkwoodThree[4]};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 `;
 
 export default PlayerList;

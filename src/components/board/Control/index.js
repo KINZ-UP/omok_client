@@ -14,9 +14,9 @@ function Control({ isJoined, players, turnIdx }) {
 
   return (
     <ControlBlock>
-      <StopwatchContainer />
-      <PlayerList players={players} turnIdx={turnIdx} />
       <ChatContainer />
+      <PlayerList players={players} turnIdx={turnIdx} />
+      <StopwatchContainer />
       <MenusContainer />
       <SettingModalContainer />
       <AlertModalContainer />
@@ -27,11 +27,21 @@ function Control({ isJoined, players, turnIdx }) {
 const ControlBlock = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: max-content max-content minmax(0, 1fr) max-content;
+  grid-template-rows: minmax(0, 1fr) max-content minmax(2em, max-content) max-content;
   background-color: ${palette.darkwoodThree[2]};
   overflow: hidden;
-  padding: 0.7rem;
-  grid-gap: 0.7rem;
+  padding: 0.7em;
+  grid-gap: 0.5em;
+
+  @media (max-aspect-ratio: 1/1) {
+    grid-template-columns: 1.618fr 1fr;
+    grid-template-rows: minmax(0, 0.6fr) minmax(0, 0.25fr) minmax(0, 1.7fr);
+
+    div:nth-child(1) {
+      grid-row: 1 / 4;
+      grid-column: 1 / 2;
+    }
+  }
 `;
 
 export default withRouter(Control);

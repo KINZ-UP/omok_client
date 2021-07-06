@@ -29,21 +29,26 @@ const ChatBlock = styled.div`
 
 const ChatInputBlock = styled.form`
   width: 100%;
-  height: 2.2rem;
+  height: 2.2em;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 2.2rem;
+  grid-template-columns: minmax(0, 1fr) 2.2em;
   input {
-    font-size: 1rem;
+    font-size: 1em;
     color: #fff;
     background: rgba(255, 255, 255, 0.15);
-    padding: 0 0.5rem;
+    padding: 0 0.5em;
     min-width: 0;
   }
   button {
     background: ${palette.darkwoodThree[3]};
-    font-size: 1.3rem;
+    font-size: 1.3em;
     color: #fff;
-    padding-top: 0.3rem;
+    padding-top: 0.1em;
+
+    img {
+      width: 1.3em;
+      height: 1.3em;
+    }
   }
 `;
 

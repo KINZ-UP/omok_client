@@ -11,6 +11,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  font-size: min(1rem, min(3.236vmin, 2vmax));
 }
 
 code {

@@ -57,7 +57,15 @@ function Menus({
 const MenuesBlock = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  column-gap: 5%;
+  grid-gap: 0.5em;
+  min-height: 0;
+
+  @media (max-aspect-ratio: 1/1) {
+    grid-gap: 0.5em;
+
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  }
 `;
 
 export default withRouter(Menus);
