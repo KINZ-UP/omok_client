@@ -14,6 +14,7 @@ import {
   initGame,
   initHistory,
   openGameChannelSaga,
+  updateNumOfSection,
 } from './board';
 import { closeChannel, openChannel } from './socket';
 
@@ -29,6 +30,7 @@ const SEND_MESSAGE = 'control/SEND_MESSAGE';
 const UPDATE_MESSAGE = 'control/UPDATE_MESSAGE';
 const CHANGE_MESSAGE = 'control/CHANGE_MESSAGE';
 const INIT_MESSAGE = 'control/INIT_MESSAGE';
+const UPDATE_NOTICE = 'control/UPDATE_NOTICE';
 const OPEN_SETTING = 'control/OPEN_SETTING';
 const CLOSE_SETTING = 'control/CLOSE_SETTING';
 const REQUEST_SETTING = 'control/REQUEST_SETTING';
@@ -74,6 +76,10 @@ export const changeMessage = (text) => ({
 });
 export const sendMessage = () => ({
   type: SEND_MESSAGE,
+});
+export const updateNotice = (notice) => ({
+  type: UPDATE_NOTICE,
+  payload: { notice },
 });
 export const toggleReady = () => ({
   type: TOGGLE_READY,
@@ -243,6 +249,7 @@ function* joinRoomSaga(action) {
         username,
       },
     });
+    yield put(updateNumOfSection(numOfSection));
     yield fork(openControlChannelSaga);
 
     if (isStarted) {
@@ -467,6 +474,16 @@ function control(state = initialState, action) {
         chatLog: state.chatLog.concat({
           type: 'CHAT',
           message: { username, isSelf, content },
+        }),
+      };
+    }
+    case UPDATE_NOTICE: {
+      const { notice } = action.payload;
+      return {
+        ...state,
+        chatLog: state.chatLog.concat({
+          type: 'NOTICE',
+          message: `- ${notice} -`,
         }),
       };
     }
