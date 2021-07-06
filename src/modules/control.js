@@ -272,6 +272,7 @@ function* leaveRoomSaga(action) {
   history.push('/');
 
   yield put({ type: INITIALIZE });
+  yield put(initHistory());
 
   const isReplace = action.payload;
   if (isReplace) return;
