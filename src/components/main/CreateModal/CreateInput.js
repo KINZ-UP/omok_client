@@ -39,9 +39,9 @@ const CreateInputBlock = styled.div`
   position: relative;
   width: 250px;
   height: 2.3rem;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
   & + & {
-    margin-top: 20px;
+    margin-top: 0.5rem;
   }
 
   .input-title {

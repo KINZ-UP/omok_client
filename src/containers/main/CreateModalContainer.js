@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
 import { create, createRoom, setRoomId } from '../../modules/room';
@@ -12,26 +18,60 @@ const defaultTitles = [
   '오목 두실 분 구합니다.',
 ];
 
-function CreateModalContainer({ history }) {
-  const socket = useSocket();
-  const { isOpen, title, isPrivate, password, username, roomId } = useSelector(
-    ({ create, user, room }) => ({
-      isOpen: create.isOpen,
-      title: create.title,
-      isPrivate: create.isPrivate,
-      password: create.password,
-      username: user.username,
-      roomId: room.roomId,
-    })
-  );
+const defaultSetting = {
+  totalTime: 30,
+  numOfSection: 14,
+};
+
+function settingReducer(state, select) {
+  switch (select.name) {
+    case 'totalTime':
+      return {
+        ...state,
+        totalTime: parseInt(select.value),
+      };
+    case 'numOfSection':
+      return {
+        ...state,
+        numOfSection: parseInt(select.value),
+      };
+    default:
+      return state;
+  }
+}
+
+function CreateModalContainer() {
   const dispatch = useDispatch();
+  const { isOpen, title, password } = useSelector(({ create }) => create);
+  const [setting, dispatchSetting] = useReducer(settingReducer, defaultSetting);
+
   const onClose = useCallback(() => {
     dispatch(closeModal());
   }, [dispatch]);
 
   const onCreate = useCallback(() => {
-    dispatch(createRoom({ title, password }));
-  }, [dispatch, title, password]);
+    dispatch(createRoom({ title, password, setting }));
+  }, [dispatch, title, password, setting]);
+
+  const settingItems = useMemo(
+    () => [
+      {
+        name: 'totalTime',
+        title: '제한시간(초)',
+        currVal: setting.totalTime,
+        options: [10, 20, 30, 60, 300, 600],
+        onChange: (e) => dispatchSetting(e.target),
+      },
+      {
+        name: 'numOfSection',
+        title: '칸수',
+        currVal: setting.numOfSection,
+        options: [10, 12, 14, 16, 18],
+        onChange: (e) => dispatchSetting(e.target),
+      },
+    ],
+    [setting]
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -40,12 +80,16 @@ function CreateModalContainer({ history }) {
     }
   }, [isOpen, dispatch]);
 
-  // useEffect(() => {
-  //   if (!socket) return;
-  //   socket.on('sendRoomId', (roomId) => history.push(`/board/${roomId}`));
-  // }, [socket, dispatch, history]);
-
-  return <CreateModal isOpen={isOpen} onClose={onClose} onCreate={onCreate} />;
+  return (
+    <CreateModal
+      isOpen={isOpen}
+      onClose={onClose}
+      onCreate={onCreate}
+      settingItems={settingItems}
+      setting={setting}
+      dispatchSetting={dispatchSetting}
+    />
+  );
 }
 
 export default withRouter(CreateModalContainer);

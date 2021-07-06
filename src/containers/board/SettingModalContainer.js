@@ -37,13 +37,15 @@ function SettingModalContainer() {
   const settingItems = useMemo(
     () => [
       {
-        name: '제한시간(초)',
+        name: 'totalTime',
+        title: '제한시간(초)',
         currVal: tempTotalTime,
         options: [10, 20, 30, 60, 300, 600],
         onChange: onChangeTotalTime,
       },
       {
-        name: '칸수',
+        name: 'numOfSection',
+        title: '칸수',
         currVal: tempNumOfSection,
         options: [10, 12, 14, 16, 18],
         onChange: onChangeNumOfSection,

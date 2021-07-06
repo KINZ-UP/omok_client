@@ -31,6 +31,10 @@ const initialState = {
   title: '',
   password: '',
   isPrivate: false,
+  setting: {
+    totalTime: 30,
+    numOfSection: 14,
+  },
 };
 
 // REDUCER

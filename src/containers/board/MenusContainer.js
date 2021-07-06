@@ -52,8 +52,8 @@ function MenusContainer({ history }) {
   }, [dispatch, history, isStarted]);
 
   const canChangeSetting = useMemo(
-    () => isOwner && !players.every((player) => player.isReady),
-    [isOwner, players]
+    () => players.length === 1 || !players.every((player) => player.isReady),
+    [players]
   );
   return (
     <Menus

@@ -37,7 +37,7 @@ const PrivateToggleBlock = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 25px;
+  margin-bottom: 0.5rem;
 
   > span + input {
     margin-left: 5px;
