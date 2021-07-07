@@ -1,20 +1,25 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PasswordModal from '../../components/main/PasswordModal';
-import { closePasswordModal, inputPassword } from '../../modules/passwordModal';
+import { closePasswordModal, inputPassword } from '../../modules/room';
 import { requestJoin } from '../../modules/room';
 
-function PasswordModalContainer({ roomId }) {
+function PasswordModalContainer() {
   const dispatch = useDispatch();
-  const { isOpen, input } = useSelector(({ passwordModal }) => passwordModal);
-  const onChange = useCallback(() => dispatch(inputPassword()), [dispatch]);
+  const { isOpen, roomId, password } = useSelector(
+    ({ room }) => room.passwordModal
+  );
+  const onChange = useCallback(
+    (e) => dispatch(inputPassword(e.target.value)),
+    [dispatch]
+  );
   const onClose = useCallback(() => dispatch(closePasswordModal()), [dispatch]);
   const onConfirm = useCallback(() => {
-    dispatch(requestJoin({ roomId, password: input }));
-  }, [dispatch, input, roomId]);
+    dispatch(requestJoin({ roomId, password }));
+  }, [dispatch, password, roomId]);
   return (
     <PasswordModal
-      password={input}
+      password={password}
       onChange={onChange}
       isOpen={isOpen}
       onClose={onClose}

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import GameList from '../../components/main/GameList';
 import useSocket from '../../lib/styles/useSocket';
 import { closeModal } from '../../modules/create';
-import { openPasswordModal } from '../../modules/passwordModal';
+import { openPasswordModal } from '../../modules/room';
 import { getRooms, requestJoin } from '../../modules/room';
 import { closeChannel } from '../../modules/socket';
 
@@ -27,14 +27,14 @@ function GameListContainer({ history }) {
   }, [requestJoinError]);
 
   const onClickItem = useCallback(
-    (roomId, isPrivate, password) => {
+    (roomId, password) => {
       if (!loggedIn)
         return () => {
           alert('로그인 후 이용하실 수 있습니다.');
           history.push('/login');
           return;
         };
-      if (!isPrivate) return () => dispatch(requestJoin({ roomId, password }));
+      if (!password) return () => dispatch(requestJoin({ roomId, password }));
       return () => dispatch(openPasswordModal(roomId));
     },
     [dispatch, history, loggedIn]

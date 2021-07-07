@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { palette } from '../../lib/styles/palette';
 
-function GameItem({ title, currNum, isStarted, onClickItem }) {
+function GameItem({ title, password, currNum, isStarted, onClickItem }) {
   return (
     <GameItemBlock onClick={onClickItem}>
       <p className="game-title">{title}</p>
@@ -24,7 +24,7 @@ const GameItemBlock = styled.div`
 
   background-color: ${palette.gray[0]};
   font-family: 'Do Hyeon', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.2em;
   cursor: pointer;
 
   & + & {

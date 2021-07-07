@@ -30,23 +30,14 @@ const REQUEST_JOIN = 'room/REQUEST_JOIN';
 const REQUEST_JOIN_FAILURE = 'room/REQUEST_JOIN_FAILURE';
 const CHECK_REQUEST_JOIN_ERROR = 'room/CHECK_REQUEST_JOIN_ERROR';
 
-const CONFIRM_PASSWORD = 'room/CONFIRM_PASSWORD';
-const CONFIRM_PASSWORD_SUCCESS = 'room/CONFIRM_PASSWORD_SUCCESS';
-const CONFIRM_PASSWORD_FAILURE = 'room/CONFIRM_PASSWORD_FAILURE';
-
-const JOIN = 'room/JOIN';
-const JOIN_SUCCESS = 'room/JOIN_SUCCESS';
-const JOIN_FAILURE = 'room/JOIN_FAILURE';
+const INPUT_PASSWORD = 'room/INPUT_PASSWORD';
+const OPEN_PASSWORD_MODAL = 'room/OPEN_PASSWORD';
+const CLOSE_PASSWORD_MODAL = 'room/CLOSE_PASSWORD_MODAL';
 
 const LEAVE_ROOM = 'room/LEAVE_ROOM';
 
 const SET_ROOM_INFO = 'room/SET_ROOM_INFO';
 const SET_ERROR = 'room/GET_ROOM_FAILURE';
-
-const UPDATE_USER = 'room/UPDATE_USER';
-const UPDATE_MESSAGE = 'room/UPDATE_MESSAGE';
-
-const OPEN_CONTROL_CHANNEL = 'room/OPEN_CONTROL_CHANNEL';
 
 // ACTION CREATION FUNCTION
 export const initialize = () => ({
@@ -81,9 +72,18 @@ export const setRoomInfo = ({ title, players, isStarted }) => ({
     isStarted,
   },
 });
-// export const openControlChannel = () => ({
-//   type: OPEN_CONTROL_CHANNEL,
-// });
+
+export const inputPassword = (password) => ({
+  type: INPUT_PASSWORD,
+  payload: { password },
+});
+export const openPasswordModal = (roomId) => ({
+  type: OPEN_PASSWORD_MODAL,
+  payload: { roomId },
+});
+export const closePasswordModal = () => ({
+  type: CLOSE_PASSWORD_MODAL,
+});
 
 function* getRoomsSaga() {
   const { socket } = yield select((state) => state.socket);
@@ -94,6 +94,7 @@ function* getRoomsSaga() {
     yield put(openChannel('roomList', channel));
     while (true) {
       const rooms = yield take(channel);
+      console.log(rooms);
       yield put({ type: SET_ROOMS, payload: rooms });
     }
   } catch (e) {
@@ -133,6 +134,7 @@ function* requestJoinSaga(action) {
   yield put(startLoading(REQUEST_JOIN));
   try {
     const { roomId, password } = action.payload;
+    console.log('password', password);
     socket.emit('requestJoin', { roomId, password });
     channel = yield call(createSocketChannel, socket, 'responseRequestJoin');
     const resp = yield take(channel);
@@ -162,12 +164,14 @@ export function* roomSaga() {
 // INITIAL STATE
 const initialState = {
   rooms: [],
-  roomId: null,
-  isJoined: false,
-  joined: null,
   joinError: null,
   roomError: null,
   requestJoinError: null,
+  passwordModal: {
+    isOpen: false,
+    roomId: null,
+    password: '',
+  },
 };
 
 // REDUCER
@@ -220,6 +224,38 @@ function room(state = initialState, action) {
           title,
           players,
           isStarted,
+        },
+      };
+    }
+    case INPUT_PASSWORD: {
+      const { password } = action.payload;
+      return {
+        ...state,
+        passwordModal: {
+          ...state.passwordModal,
+          password,
+        },
+      };
+    }
+    case OPEN_PASSWORD_MODAL: {
+      const { roomId } = action.payload;
+      return {
+        ...state,
+        passwordModal: {
+          ...state.passwordModal,
+          isOpen: true,
+          roomId,
+        },
+      };
+    }
+    case CLOSE_PASSWORD_MODAL: {
+      return {
+        ...state,
+        passwordModal: {
+          ...state.passwordModal,
+          isOpen: false,
+          roomId: null,
+          password: '',
         },
       };
     }

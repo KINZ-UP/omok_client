@@ -9,7 +9,6 @@ import room, { roomSaga } from './room';
 import board, { boardSaga } from './board';
 import socket from './socket';
 import control, { controlSaga } from './control';
-import passwordModal from './passwordModal';
 
 const rootReducer = combineReducers({
   common,
@@ -21,7 +20,6 @@ const rootReducer = combineReducers({
   board,
   socket,
   control,
-  passwordModal,
 });
 
 export function* rootSaga() {
