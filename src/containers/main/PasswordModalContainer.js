@@ -16,6 +16,7 @@ function PasswordModalContainer() {
   const onClose = useCallback(() => dispatch(closePasswordModal()), [dispatch]);
   const onConfirm = useCallback(() => {
     dispatch(requestJoin({ roomId, password }));
+    dispatch(closePasswordModal());
   }, [dispatch, password, roomId]);
   return (
     <PasswordModal

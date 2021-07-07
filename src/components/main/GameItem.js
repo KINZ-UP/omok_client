@@ -1,11 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { palette } from '../../lib/styles/palette';
+import Key from '../../assets/icons/Key.svg';
 
 function GameItem({ title, password, currNum, isStarted, onClickItem }) {
   return (
     <GameItemBlock onClick={onClickItem}>
-      <p className="game-title">{title}</p>
+      <div className="game-title">
+        {password && <img src={Key} alt="private" />}
+        <p>{title}</p>
+      </div>
+
       <div className="game-info">
         <p className="curr-state">{isStarted ? '진행중' : '대기중'}</p>
         <p className="curr-number">{currNum}/2</p>
@@ -38,6 +43,11 @@ const GameItemBlock = styled.div`
     font-weight: 500;
     padding-right: 2rem;
     word-break: break-all;
+    display: flex;
+
+    img {
+      margin-right: 0.5em;
+    }
   }
 
   .game-info {

@@ -251,6 +251,7 @@ function room(state = initialState, action) {
     case CLOSE_PASSWORD_MODAL: {
       return {
         ...state,
+        requestJoinError: null,
         passwordModal: {
           ...state.passwordModal,
           isOpen: false,

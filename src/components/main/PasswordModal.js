@@ -7,7 +7,9 @@ function PasswordModal({ password, onChange, isOpen, onClose, onConfirm }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <PasswordModalBlock>
-        <p>비밀번호를 입력하세요.</p>
+        <p>
+          비공개 방입니다.<br></br>비밀번호를 입력하세요.
+        </p>
         <input type="password" value={password} onChange={onChange} />
         <Footer>
           <Button onClick={onClose}>취소</Button>
@@ -20,7 +22,9 @@ function PasswordModal({ password, onChange, isOpen, onClose, onConfirm }) {
 
 const PasswordModalBlock = styled.div`
   p {
-    margin-bottom: 0.8em;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin-bottom: 0.7em;
   }
   input {
     padding: 0.5em;
