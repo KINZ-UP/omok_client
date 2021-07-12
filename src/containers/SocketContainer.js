@@ -11,7 +11,7 @@ function SocketContainer() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const socket = io('http://localhost:8000');
+    const socket = io('http://localhost:4000');
 
     if (loggedIn) {
       dispatch(connect(socket));
