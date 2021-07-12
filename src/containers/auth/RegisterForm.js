@@ -42,8 +42,7 @@ function RegisterForm({ history }) {
 
   useEffect(() => {
     if (authError) {
-      const { status } = authError?.response;
-      if (status === 409) {
+      if (authError.response?.status === 409) {
         setErrorMsg('이미 가입된 아이디입니다.');
         return;
       }

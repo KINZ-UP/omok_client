@@ -47,8 +47,7 @@ function LoginForm({ history }) {
 
   useEffect(() => {
     if (authError) {
-      const { status } = authError?.response;
-      if (status === 400) {
+      if (authError.response?.status === 400) {
         setErrorMsg('아이디 혹은 비밀번호를 확인하세요.');
         return;
       }
