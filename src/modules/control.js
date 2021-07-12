@@ -340,7 +340,7 @@ function* confirmSettingSaga(action) {
 
   const { totalTime, numOfSection } = action.payload;
   console.log('You have requested update setting');
-  yield socket.emit('updateSetting', { roomId, totalTime, numOfSection });
+  socket.emit('updateSetting', { roomId, totalTime, numOfSection });
 }
 
 function* surrenderSaga() {
@@ -522,6 +522,7 @@ function control(state = initialState, action) {
           isReady: player.isOwner,
         })),
         turnIdx: null,
+        isMyTurn: false,
         chatLog: state.chatLog.concat({
           type: 'NOTICE',
           message: `- ${
