@@ -11,7 +11,7 @@ function GridContainer({ sizeRatio, numOfSection }) {
   const onMouseMove = useCallback(
     (e) => {
       if (!isStarted || !isMyTurn) return;
-      dispatch(mouseMove(e));
+      setTimeout(() => dispatch(mouseMove(e)));
     },
     [dispatch, isStarted, isMyTurn]
   );
