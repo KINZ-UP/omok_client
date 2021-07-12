@@ -1,4 +1,4 @@
-import { put, throttle } from '@redux-saga/core/effects';
+import { put } from '@redux-saga/core/effects';
 import { call, select, take, takeLatest } from 'redux-saga/effects';
 import { createSocketChannel } from '../lib/styles/createSocketChannel';
 import { resetTimer, updateNotice, updateTurn } from './control';
@@ -6,9 +6,7 @@ import { openChannel } from './socket';
 
 const GET_RECT = 'board/GET_RECT';
 const MOUSE_MOVE = 'board/MOUSE_MOVE';
-const MOUSE_MOVE_THROTTLE = 'board/MOUSE_MOVE_THROTTLE';
 const MOUSE_LEAVE = 'board/MOUSE_LEAVE';
-const MOUSE_LEAVE_THROTTLE = 'board/MOUSE_LEAVE_THROTTLE';
 
 const INIT_GAME = 'board/INIT_GAME';
 const INIT_HISTORY = 'board/INIT_HISTORY';
@@ -118,7 +116,6 @@ function board(state = initialState, action) {
   switch (action.type) {
     case GET_RECT: {
       const { x, y, width, height } = action.payload.getBoundingClientRect();
-      console.log(x, width, height);
       return {
         ...state,
         rect: {

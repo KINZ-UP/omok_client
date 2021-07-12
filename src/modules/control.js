@@ -237,7 +237,7 @@ function* joinRoomSaga(action) {
   if (resp.success) {
     const { players, isStarted, turnIdx, totalTime, numOfSection, history } =
       resp.data;
-    console.log(totalTime, numOfSection);
+
     yield put({
       type: JOIN_ROOM_SUCCESS,
       payload: {
@@ -266,7 +266,6 @@ function* joinRoomSaga(action) {
 function* leaveRoomSaga(action) {
   const { socket } = yield select((state) => state.socket);
   const { roomId } = yield select((state) => state.control);
-  console.log('You have left the Room', roomId);
 
   const history = yield getContext('history');
   history.push('/');
@@ -401,7 +400,6 @@ function control(state = initialState, action) {
       const myIdx = players.findIndex((player) => player.username === username);
       const { isOwner } = players[myIdx];
 
-      console.log(numOfSection, totalTime);
       return {
         ...state,
         isJoined: true,

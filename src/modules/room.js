@@ -94,7 +94,6 @@ function* getRoomsSaga() {
     yield put(openChannel('roomList', channel));
     while (true) {
       const rooms = yield take(channel);
-      console.log(rooms);
       yield put({ type: SET_ROOMS, payload: rooms });
     }
   } catch (e) {
