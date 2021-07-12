@@ -11,7 +11,7 @@ function SocketContainer() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const socket = io('http://localhost:4000');
+    const socket = io(process.env.REACT_APP_BASE_URL);
 
     if (loggedIn) {
       dispatch(connect(socket));
