@@ -3,7 +3,14 @@ import styled from 'styled-components';
 import { palette } from '../../lib/styles/palette';
 import Key from '../../assets/icons/Key.svg';
 
-function GameItem({ title, password, currNum, isStarted, onClickItem }) {
+function GameItem({
+  title,
+  password,
+  currNum,
+  isStarted,
+  totalTime,
+  onClickItem,
+}) {
   return (
     <GameItemBlock onClick={onClickItem}>
       <div className="game-title">
@@ -12,6 +19,7 @@ function GameItem({ title, password, currNum, isStarted, onClickItem }) {
       </div>
 
       <div className="game-info">
+        <p className="totalTime">{totalTime}초</p>
         <p className="curr-state">{isStarted ? '진행중' : '대기중'}</p>
         <p className="curr-number">{currNum}/2</p>
       </div>
@@ -29,7 +37,7 @@ const GameItemBlock = styled.div`
 
   background-color: ${palette.gray[0]};
   font-family: 'Do Hyeon', sans-serif;
-  font-size: 1.2em;
+  font-size: 1.2rem;
   cursor: pointer;
 
   & + & {
@@ -52,16 +60,20 @@ const GameItemBlock = styled.div`
 
   .game-info {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     margin-left: auto;
     color: ${palette.gray[8]};
 
-    .curr-state {
+    .totalTime {
       width: 4rem;
-      text-align: left;
+      text-align: right;
+    }
+    .curr-state {
+      width: 5.5rem;
+      text-align: right;
     }
     .curr-number {
-      width: 3rem;
+      width: 4rem;
       text-align: right;
     }
   }
