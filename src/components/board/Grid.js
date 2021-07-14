@@ -25,7 +25,9 @@ function Grid({
   }, [dispatch, gridElem, numOfSection]);
 
   useEffect(() => {
-    window.onresize = () => dispatch(getRect(gridElem.current));
+    const onGridResize = () => dispatch(getRect(gridElem.current));
+    window.addEventListener('resize', onGridResize);
+    return () => window.removeEventListener('resize', onGridResize);
   }, [dispatch]);
 
   return (
