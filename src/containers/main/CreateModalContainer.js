@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
-import { create, createRoom, setRoomId } from '../../modules/room';
+import { createRoom } from '../../modules/room';
 import { closeModal, setDefaultTitle } from '../../modules/create';
 import CreateModal from '../../components/main/CreateModal';
 
