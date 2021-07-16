@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { palette } from '../../lib/styles/palette';
@@ -14,10 +14,15 @@ function AuthForm({ type, onChangeInput, onSubmitForm, errorMsg }) {
     (state) => state.auth[type]
   );
 
+  const UsernameRef = useRef(null);
+
+  useEffect(() => UsernameRef.current.focus());
+
   return (
     <AuthFormBlock onSubmit={onSubmitForm}>
       <h3>{textMap[type]}</h3>
       <StyledInput
+        ref={UsernameRef}
         name="username"
         placeholder="아이디"
         autoComplete="username"
