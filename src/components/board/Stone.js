@@ -28,7 +28,10 @@ const StoneBlock = styled.div`
   transform: ${(props) =>
     `translate(${100 * props.position.x}%, ${100 * props.position.y}%)`};
 
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: ${(props) =>
+    props.color === 'white'
+      ? 'inset 5px 5px 5px rgba(0, 0, 0, 0.2)'
+      : 'inset 3px 3px 5px rgba(255, 255, 255, 0.15)'};
 
   z-index: 1;
 
