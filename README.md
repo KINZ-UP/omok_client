@@ -2,7 +2,7 @@
 
 2인 멀티플레이가 가능한 오목 게임 웹 어플리케이션입니다.
 <br>
-직접 방을 생성하거나 다른 사람이 생성한 방에 들어가서 상대방과 오목을 플레이할 수 있습니다.
+직접 방을 생성하거나 다른 사람이 생성한 방에 들어가서 상대방과 대전할 수 있습니다.
 <br>
 
 - [오목 온라인 Live Page](http://omok.kinzup.com)
@@ -15,12 +15,13 @@ _Fig. 1 Screenshot_
 <br>
 <img src="./images/playing01.png" width="500" style="text-align: center">
 <br>
-
-## Dev Stacks
-
-**ReactJS**, ReduxJS, Redux-saga, styled-components, socket-io
 <br>
-AWS S3, AWS Route
+
+## Teck Stacks
+
+| FRONTEND                                             | BACKEND                          | DEPLOYMENT                        |
+| :--------------------------------------------------- | :------------------------------- | :-------------------------------- |
+| React<br>Redux<br>Redux-saga<br>Socket.io-client<br> | Express<br>socket.io<br>mongoose | AWS S3<br>AWS Route 53<br>AWS EC2 |
 
 <br>
 
@@ -46,13 +47,37 @@ AWS S3, AWS Route
 
 ### Fully Responsive Layout
 
+_Device의 aspect-ratio에 따라 수평 / 수직 배치_
+|Horizontal|Vertical|
+|:--:|:--:|
+|<img src="./images/horizontal.png" width=300>|<img src="./images/vertical.png" width=180>|
+
 ### Auto Renewing of Game List
+
+_게임이 생성되거나 게임 정보가 갱신되었을 때 리스트를 자동으로 업데이트_<br>
+// 사진 추가
 
 ### Handling User Disconnection
 
-### 금수 룰 적용
+_게임 중 플레이어의 연결이 끊긴 경우 30초간 대기하였다가 퇴장 처리_<br>
+_30초 이내에 재접속시 정상 진행_
 
-<br><br>
+### Handling Connection From Other Gadget With Same Account
+
+동일 계정으로 다른 기기에서 접속시 기 접속 중인 기기에서는 방에서 퇴장되도록 구현
+<br>
+<br>
+
+### 금수 알고리즘 적용
+
+_렌주룰을 적용하여 흑에게만 쌍삼 자리에 금수 적용_
+
+착수하였을 때 삼목과 한 칸 떨어진 삼목 등 상대방이 수비를 하지 않고 한 수를 더 두었을 경우 양쪽이 모두 막혀있지 않은 사목이 되는 모양이 두 곳 이상일 때를 쌍삼으로 정의하여,
+
+해당 정의에 입각하여 쌍삼 알고리즘을 구현
+
+<br>
+<br>
 
 ## How to Install
 
@@ -72,16 +97,6 @@ npm i
 yarn
 ```
 
-### Execute
-
-```js
-npm start
-
-// or
-
-yarn start
-```
-
 ### Add Environmental Variables
 
 _.dev_
@@ -94,3 +109,13 @@ root 폴더에 _.dev_ 를 생성하여 **REACT_APP_BASE_URL** 변수에 서버 U
 <br>
 
 [서버 Repository](https://github.com/KINZ-UP/omok_server)
+
+### Execute
+
+```js
+npm start
+
+// or
+
+yarn start
+```
