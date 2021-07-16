@@ -50,6 +50,7 @@ const WhiteBox = styled.div`
   padding: 15px 25px 40px 25px;
 
   > h3 {
+    font-size: 1rem;
     padding: 1rem 2rem;
     margin-bottom: 1rem;
     color: ${palette.gray[8]};

@@ -51,6 +51,7 @@ const AuthFormBlock = styled.form`
   flex-direction: column;
 
   > h3 {
+    font-size: 1rem;
     color: ${palette.gray[7]};
     margin-bottom: 0.7rem;
   }
