@@ -14,7 +14,7 @@ function MenusContainer({ history }) {
   const { isOwner, players, myIdx, isStarted } = useSelector(
     ({ control }) => control
   );
-  const isReady = useMemo(() => players[myIdx].isReady, [myIdx, players]);
+  const isReady = useMemo(() => players[myIdx]?.isReady, [myIdx, players]);
 
   const dispatch = useDispatch();
 
