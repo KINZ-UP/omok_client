@@ -31,6 +31,10 @@ function RegisterForm({ history }) {
       setErrorMsg('빈 칸을 모두 입력하세요.');
       return;
     }
+    if ([username, password].some((value) => value.length < 6)) {
+      setErrorMsg('아이디와 비밀번호는 최소 6자 이상이어야 합니다.');
+      return;
+    }
     if (password !== passwordConfirm) {
       setErrorMsg('비밀번호가 일치하지 않습니다.');
       return;
