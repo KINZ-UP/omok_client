@@ -194,7 +194,13 @@ export function* openControlChannelSaga() {
           break;
         }
         case 'ANOTHER_CONNECTION': {
-          alert('다른 기기에서 접속하였습니다.');
+          yield put({
+            type: JOIN_ROOM_FAILURE,
+            payload: {
+              type: 'ANOTHER_CONNECTION',
+              message: '다른 기기에서 접속하였습니다.',
+            },
+          });
           yield put({ type: LEAVE_ROOM, payload: true });
           break;
         }
@@ -258,7 +264,7 @@ function* joinRoomSaga(action) {
       yield fork(openTimerChannelSaga);
     }
   } else {
-    yield put({ type: JOIN_ROOM_FAILURE, payload: resp.message });
+    yield put({ type: JOIN_ROOM_FAILURE, payload: { message: resp.message } });
     yield put({ type: LEAVE_ROOM });
   }
 }
