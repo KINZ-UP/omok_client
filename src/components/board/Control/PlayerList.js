@@ -38,7 +38,8 @@ const PlayerBlock = styled.div`
         text-decoration: underline;
       `}
 
-    max-width: 4em;
+    max-width: 5em;
+    overflow: hidden;
     text-overflow: ellipsis;
   }
   .state {
