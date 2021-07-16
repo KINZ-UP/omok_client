@@ -42,11 +42,6 @@ const START_GAME = 'control/START_GAME';
 const REQUEST_SURRENDER = 'control/REQUEST_SURRENDER';
 const END_GAME = 'control/END_GAME';
 const REQUEST_PUT_STONE = 'control/REQUEST_PUT_STONE';
-const REQUEST_ROLLBACK = 'control/REQUEST_ROLLBACK';
-const GET_ROLLBACK_REQUEST = 'control/GET_ROLLBACK_REQUEST';
-const APPROVE_ROLLBACK = 'control/APPROVE_ROLLBACK';
-const DECLINE_ROLLBACK = 'control/DECLINE_ROLLBACK';
-const INIT_ROLLBACK_REQUEST = 'control/INIT_ROLLBACK_REQUEST';
 const UPDATE_TURN = 'control/UPDATE_TURN';
 const UPDATE_TIMER = 'control/UPDATE_TIMER';
 const RESET_TIMER = 'control/RESET_TIMER';
@@ -103,18 +98,6 @@ export const requestSurrender = () => ({
 export const requestPutStone = (position) => ({
   type: REQUEST_PUT_STONE,
   payload: { position },
-});
-export const requestRollback = () => ({
-  type: REQUEST_ROLLBACK,
-});
-export const getRollbackRequest = () => ({
-  type: GET_ROLLBACK_REQUEST,
-});
-export const approveRollback = () => ({
-  type: APPROVE_ROLLBACK,
-});
-export const declineRollback = () => ({
-  type: DECLINE_ROLLBACK,
 });
 export const updateTurn = (idx) => ({
   type: UPDATE_TURN,
@@ -315,30 +298,6 @@ function* startGameSaga() {
   socket.emit('startGame', roomId);
 }
 
-function* rollbackSaga() {
-  const { socket } = yield select((state) => state.socket);
-  const { roomId } = yield select((state) => state.control);
-  console.log('requested rollback');
-  socket.emit('rollback', { roomId });
-}
-
-function* approveRollbackSaga() {
-  console.log('Approved rollback');
-  const { socket } = yield select((state) => state.socket);
-  const { roomId, myIdx, players } = yield select((state) => state.control);
-  yield put({ type: INIT_ROLLBACK_REQUEST });
-
-  const color = players[myIdx].isFirst ? -1 : 1;
-  socket.emit('approveRollback', { roomId, color });
-}
-
-function* declineRollbackSaga() {
-  const { socket } = yield select((state) => state.socket);
-  const { roomId } = yield select((state) => state.control);
-  yield put({ type: INIT_ROLLBACK_REQUEST });
-  socket.emit('declineRollback', { roomId });
-}
-
 function* confirmSettingSaga(action) {
   const { socket } = yield select((state) => state.socket);
   const { roomId } = yield select((state) => state.control);
@@ -361,9 +320,6 @@ export function* controlSaga() {
   yield takeEvery(TOGGLE_READY, toggleReadySaga);
   yield takeLatest(REQUEST_START_GAME, startGameSaga);
   yield takeLatest(REQUEST_SURRENDER, surrenderSaga);
-  yield takeLatest(REQUEST_ROLLBACK, rollbackSaga);
-  yield takeLatest(APPROVE_ROLLBACK, approveRollbackSaga);
-  yield takeLatest(DECLINE_ROLLBACK, declineRollbackSaga);
   yield takeLatest(REQUEST_SETTING, confirmSettingSaga);
 }
 
@@ -378,7 +334,6 @@ const initialState = {
   isStarted: false,
   turnIdx: null,
   isMyTurn: false,
-  rollbackRequest: false,
   joinError: null,
   remainTime: 30,
   setting: {
@@ -543,18 +498,6 @@ function control(state = initialState, action) {
         isMyTurn: turnIdx === state.myIdx,
       };
     }
-    case GET_ROLLBACK_REQUEST: {
-      return {
-        ...state,
-        rollbackRequest: true,
-      };
-    }
-    case INIT_ROLLBACK_REQUEST: {
-      return {
-        ...state,
-        rollbackRequest: false,
-      };
-    }
     case RESET_TIMER: {
       return {
         ...state,
@@ -597,19 +540,6 @@ function control(state = initialState, action) {
         },
       };
     }
-
-    // case APPROVE_ROLLBACK_REQUEST: {
-    //   return {
-    //     ...state,
-    //     rollbackRequest: false,
-    //   };
-    // }
-    // case DECLINE_ROLLBACK_REQUEST: {
-    //   return {
-    //     ...state,
-    //     rollbackRequest: false,
-    //   };
-    // }
     default:
       return state;
   }

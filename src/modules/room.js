@@ -21,10 +21,6 @@ const INITIALIZE = '/room/INITIALIZE';
 const GET_ROOMS = 'room/GET_ROOM';
 const SET_ROOMS = 'room/SET_ROOMS';
 
-const GET_ROOMID = 'room/GET_ROOMID';
-const SET_ROOMID = 'room/SET_ROOMID';
-const INITIALIZE_ROOMID = 'room/INITIALIZE_ROOMID';
-
 const CREATE_ROOM = 'room/CREATE_ROOM';
 const REQUEST_JOIN = 'room/REQUEST_JOIN';
 const REQUEST_JOIN_FAILURE = 'room/REQUEST_JOIN_FAILURE';
@@ -34,9 +30,6 @@ const INPUT_PASSWORD = 'room/INPUT_PASSWORD';
 const OPEN_PASSWORD_MODAL = 'room/OPEN_PASSWORD';
 const CLOSE_PASSWORD_MODAL = 'room/CLOSE_PASSWORD_MODAL';
 
-const LEAVE_ROOM = 'room/LEAVE_ROOM';
-
-const SET_ROOM_INFO = 'room/SET_ROOM_INFO';
 const SET_ERROR = 'room/GET_ROOM_FAILURE';
 
 // ACTION CREATION FUNCTION
@@ -56,24 +49,6 @@ export const requestJoin = ({ roomId, password }) => ({
 });
 export const resetJoinError = () => ({
   type: RESET_JOIN_ERROR,
-});
-export const leaveRoom = (roomId) => ({
-  type: LEAVE_ROOM,
-  payload: { roomId },
-});
-export const getRoomId = () => ({
-  type: GET_ROOMID,
-});
-export const initializeRoomId = () => ({
-  type: INITIALIZE_ROOMID,
-});
-export const setRoomInfo = ({ title, players, isStarted }) => ({
-  type: SET_ROOM_INFO,
-  payload: {
-    title,
-    players,
-    isStarted,
-  },
 });
 export const inputPassword = (password) => ({
   type: INPUT_PASSWORD,
@@ -141,7 +116,7 @@ function* requestJoinSaga(action) {
     const resp = yield take(channel);
 
     if (resp.success) {
-      yield put({ type: SET_ROOMID, payload: roomId });
+      // yield put({ type: SET_ROOMID, payload: roomId });
       const history = yield getContext('history');
       history.push(`/board/${roomId}`);
     } else {
@@ -203,29 +178,6 @@ function room(state = initialState, action) {
       return {
         ...state,
         roomError: action.payload,
-      };
-    }
-    case SET_ROOMID: {
-      return {
-        ...state,
-        roomId: action.payload,
-      };
-    }
-    case INITIALIZE_ROOMID: {
-      return {
-        ...state,
-        roomId: null,
-      };
-    }
-    case SET_ROOM_INFO: {
-      const { title, players, isStarted } = action.payload;
-      return {
-        ...state,
-        joined: {
-          title,
-          players,
-          isStarted,
-        },
       };
     }
     case INPUT_PASSWORD: {
