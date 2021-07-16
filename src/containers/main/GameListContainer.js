@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import GameList from '../../components/main/GameList';
 import useSocket from '../../lib/styles/useSocket';
 import { closeModal } from '../../modules/create';
-import { openPasswordModal } from '../../modules/room';
+import { openPasswordModal, resetJoinError } from '../../modules/room';
 import { getRooms, requestJoin } from '../../modules/room';
 import { closeChannel } from '../../modules/socket';
 
@@ -23,8 +23,9 @@ function GameListContainer({ history }) {
   useEffect(() => {
     if (requestJoinError) {
       alert(requestJoinError);
+      dispatch(resetJoinError());
     }
-  }, [requestJoinError]);
+  }, [dispatch, requestJoinError]);
 
   const onClickItem = useCallback(
     (roomId, password) => {

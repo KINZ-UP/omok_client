@@ -28,7 +28,7 @@ const INITIALIZE_ROOMID = 'room/INITIALIZE_ROOMID';
 const CREATE_ROOM = 'room/CREATE_ROOM';
 const REQUEST_JOIN = 'room/REQUEST_JOIN';
 const REQUEST_JOIN_FAILURE = 'room/REQUEST_JOIN_FAILURE';
-const CHECK_REQUEST_JOIN_ERROR = 'room/CHECK_REQUEST_JOIN_ERROR';
+const RESET_JOIN_ERROR = 'room/RESET_JOIN_ERROR';
 
 const INPUT_PASSWORD = 'room/INPUT_PASSWORD';
 const OPEN_PASSWORD_MODAL = 'room/OPEN_PASSWORD';
@@ -54,6 +54,9 @@ export const requestJoin = ({ roomId, password }) => ({
   type: REQUEST_JOIN,
   payload: { roomId, password },
 });
+export const resetJoinError = () => ({
+  type: RESET_JOIN_ERROR,
+});
 export const leaveRoom = (roomId) => ({
   type: LEAVE_ROOM,
   payload: { roomId },
@@ -72,7 +75,6 @@ export const setRoomInfo = ({ title, players, isStarted }) => ({
     isStarted,
   },
 });
-
 export const inputPassword = (password) => ({
   type: INPUT_PASSWORD,
   payload: { password },
@@ -191,7 +193,7 @@ function room(state = initialState, action) {
         requestJoinError: action.payload,
       };
     }
-    case CHECK_REQUEST_JOIN_ERROR: {
+    case RESET_JOIN_ERROR: {
       return {
         ...state,
         requestJoinError: null,
