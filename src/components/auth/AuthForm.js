@@ -16,7 +16,7 @@ function AuthForm({ type, onChangeInput, onSubmitForm, errorMsg }) {
 
   const UsernameRef = useRef(null);
 
-  useEffect(() => UsernameRef.current.focus());
+  useEffect(() => UsernameRef.current.focus(), []);
 
   return (
     <AuthFormBlock onSubmit={onSubmitForm}>
