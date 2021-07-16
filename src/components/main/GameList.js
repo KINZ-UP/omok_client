@@ -2,7 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import GameItem from './GameItem';
 
-function GameList({ rooms, onClickItem }) {
+function GameList({ loggedIn, rooms, onClickItem }) {
+  if (!loggedIn)
+    return <EmptyListBlock>로그인 후 이용하실 수 있습니다.</EmptyListBlock>;
+
   if (!rooms.length)
     return <EmptyListBlock>개설된 방이 없습니다.</EmptyListBlock>;
 

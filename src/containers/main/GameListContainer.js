@@ -49,7 +49,9 @@ function GameListContainer({ history }) {
     [dispatch]
   );
 
-  return <GameList rooms={rooms} onClickItem={onClickItem} />;
+  return (
+    <GameList loggedIn={loggedIn} rooms={rooms} onClickItem={onClickItem} />
+  );
 }
 
 export default withRouter(GameListContainer);
