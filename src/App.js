@@ -1,21 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import SocketContainer from './containers/SocketContainer';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
 function App() {
-  const { loggedIn } = useSelector(({ user }) => user);
   return (
     <>
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
       <SocketContainer />
-      <Route path="/login">
-        {loggedIn ? <Redirect to="/" /> : <LoginPage />}
-      </Route>
-      <Route path="/register">
-        {loggedIn ? <Redirect to="/" /> : <RegisterPage />}
-      </Route>
     </>
   );
 }

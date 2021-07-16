@@ -1,30 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import LoginForm from '../../containers/auth/LoginForm';
 import RegisterForm from '../../containers/auth/RegisterForm';
 import { palette } from '../../lib/styles/palette';
 
 function AuthTemplate({ type }) {
+  const { loggedIn } = useSelector(({ user }) => user);
+  if (loggedIn) return <Redirect to="/" />;
+
   return (
     <AuthTemplateBlock>
       <WhiteBox>
         <h3>OMOK ONLINE</h3>
-        {type === 'login' ? (
-          <>
-            <LoginForm />
-            <Footer>
-              <Link to="/register">회원가입</Link>
-            </Footer>
-          </>
-        ) : (
-          <>
-            <RegisterForm />
-            <Footer>
-              <Link to="/login">로그인</Link>
-            </Footer>
-          </>
-        )}
+        {type === 'login' ? <LoginForm /> : <RegisterForm />}
+        <Footer>
+          {type === 'login' ? (
+            <Link to="/register">회원가입</Link>
+          ) : (
+            <Link to="/login">로그인</Link>
+          )}
+        </Footer>
       </WhiteBox>
     </AuthTemplateBlock>
   );
