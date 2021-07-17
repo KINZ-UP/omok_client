@@ -17,13 +17,13 @@ function ControlContainer({ match }) {
   const socket = useSocket();
 
   useEffect(() => {
+    if (!socket) return;
+
     if (!roomId || !username) {
       alert('잘못된 접근입니다.');
       dispatch(leaveRoom());
       return;
     }
-
-    if (!socket) return;
 
     dispatch(joinRoom(roomId, username));
   }, [dispatch, roomId, socket, username]);
