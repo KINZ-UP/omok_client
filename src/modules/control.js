@@ -57,9 +57,8 @@ export const joinRoom = (roomId, username) => ({
   type: JOIN_ROOM,
   payload: { roomId, username },
 });
-export const leaveRoom = (isReplace) => ({
+export const leaveRoom = () => ({
   type: LEAVE_ROOM,
-  payload: isReplace,
 });
 export const newPlayer = (player) => ({
   type: NEW_PLAYER,
@@ -252,9 +251,9 @@ function* joinRoomSaga(action) {
   }
 }
 
-function* leaveRoomSaga(action) {
+function* leaveRoomSaga() {
   const { socket } = yield select((state) => state.socket);
-  const { roomId } = yield select((state) => state.control);
+  const { roomId, joinError } = yield select((state) => state.control);
 
   const history = yield getContext('history');
   history.push('/');
@@ -262,9 +261,7 @@ function* leaveRoomSaga(action) {
   yield put({ type: INITIALIZE });
   yield put(initHistory());
 
-  const isReplace = action.payload;
-  if (isReplace) return;
-
+  if (joinError?.type === 'ANOTHER_CONNECTION') return;
   socket.emit('onLeaveRoom', { roomId });
 }
 

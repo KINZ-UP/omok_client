@@ -31,8 +31,7 @@ function ControlContainer({ match }) {
   useEffect(() => {
     if (joinError) {
       alert(joinError.message);
-      const flag = joinError.type === 'ANOTHER_CONNECTION';
-      dispatch(leaveRoom(flag));
+      dispatch(leaveRoom());
     }
   }, [dispatch, joinError]);
 
