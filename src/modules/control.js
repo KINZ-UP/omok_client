@@ -115,19 +115,19 @@ export function* openControlChannelSaga() {
 
   try {
     while (true) {
-      const action = yield take(channel);
-      switch (action.type) {
+      const resp = yield take(channel);
+      switch (resp.type) {
         case 'NEW_USER': {
-          yield put({ type: NEW_PLAYER, payload: action.username });
+          yield put({ type: NEW_PLAYER, payload: resp.username });
           break;
         }
         case 'EXIT_USER': {
-          const { players, exitUser } = action.payload;
+          const { players, exitUser } = resp.payload;
           yield put({ type: EXIT_USER, payload: { players, exitUser } });
           break;
         }
         case 'MESSAGE': {
-          const { username, content } = action.payload;
+          const { username, content } = resp.payload;
           const message = {
             username,
             content,
@@ -137,12 +137,12 @@ export function* openControlChannelSaga() {
           break;
         }
         case 'TOGGLE_READY': {
-          const { username } = action.payload;
+          const { username } = resp.payload;
           yield put({ type: UPDATE_READY, payload: username });
           break;
         }
         case 'SETTING': {
-          const { totalTime, numOfSection } = action.payload;
+          const { totalTime, numOfSection } = resp.payload;
           yield put({
             type: UPDATE_SETTING,
             payload: { totalTime, numOfSection },
@@ -152,7 +152,7 @@ export function* openControlChannelSaga() {
           break;
         }
         case 'START': {
-          const { turnIdx } = action.payload;
+          const { turnIdx } = resp.payload;
           const { numOfSection } = yield select(
             (state) => state.control.setting
           );
@@ -164,12 +164,12 @@ export function* openControlChannelSaga() {
           break;
         }
         case 'START_ERROR': {
-          const { message } = action.payload;
+          const { message } = resp.payload;
           alert(message);
           break;
         }
         case 'END': {
-          const { winnerIdx } = action.payload;
+          const { winnerIdx } = resp.payload;
           yield put({ type: END_GAME, payload: { winnerIdx } });
           yield put(closeChannel('game'));
           yield put(closeChannel('timer'));

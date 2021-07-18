@@ -74,18 +74,18 @@ export function* openGameChannelSaga() {
 
   try {
     while (true) {
-      const action = yield take(channel);
-      switch (action.type) {
+      const resp = yield take(channel);
+      switch (resp.type) {
         case 'PUT_STONE': {
-          const { x, y, turnIdx } = action.payload;
+          const { x, y, turnIdx } = resp.payload;
           yield put({ type: PUT_STONE, payload: { x, y } });
           yield put(updateTurn(turnIdx));
           yield put(resetTimer());
           break;
         }
         case 'PUT_STONE_ERROR': {
-          const { message } = action.payload;
-          yield put({ type: PUT_STONE_ERROR, payload: action.payload });
+          const { message } = resp.payload;
+          yield put({ type: PUT_STONE_ERROR, payload: resp.payload });
           yield put(updateNotice(message));
           break;
         }
