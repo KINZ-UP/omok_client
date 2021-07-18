@@ -50,7 +50,7 @@ _Fig. 1 Screenshot_
 
 ### Fully Responsive Layout
 
-_Device의 aspect-ratio에 따라 수평 / 수직 배치_
+_Screen의 size 및 aspect-ratio에 따른 반응형 UI_
 |Horizontal|Vertical|
 |:--:|:--:|
 |<img src="./images/horizontal.png" width=300>|<img src="./images/vertical.png" width=180>|
@@ -89,7 +89,7 @@ _렌주룰을 적용하여 흑에게 쌍삼 자리에 금수 적용_
 ### Clone Repository
 
 ```bash
-git clone
+git clone https://github.com/KINZ-UP/omok_client.git
 ```
 
 ### Install Packages
