@@ -253,7 +253,6 @@ function* joinRoomSaga(action) {
 
 function* leaveRoomSaga() {
   const { socket } = yield select((state) => state.socket);
-  const { roomId, joinError } = yield select((state) => state.control);
 
   const history = yield getContext('history');
   history.push('/');
@@ -261,16 +260,18 @@ function* leaveRoomSaga() {
   yield put({ type: INITIALIZE });
   yield put(initHistory());
 
+  const { joinError } = yield select((state) => state.control);
   if (joinError?.type === 'ANOTHER_CONNECTION') return;
-  socket.emit('onLeaveRoom', { roomId });
+
+  socket.emit('leaveRoom');
 }
 
 function* sendMessageSaga() {
   const { socket } = yield select((state) => state.socket);
   const { username } = yield select((state) => state.user);
-  const roomId = yield select((state) => state.control.roomId);
+
   const chatInput = yield select((state) => state.control.chatInput);
-  socket.emit('sendMessage', { roomId: roomId, message: chatInput });
+  socket.emit('sendMessage', chatInput);
   const message = {
     username,
     isSelf: true,
@@ -283,31 +284,26 @@ function* sendMessageSaga() {
 function* toggleReadySaga() {
   const { socket } = yield select((state) => state.socket);
   const { username } = yield select((state) => state.user);
-  const { roomId } = yield select((state) => state.control);
 
-  socket.emit('toggleReady', roomId);
+  socket.emit('toggleReady');
   yield put({ type: UPDATE_READY, payload: username });
 }
 
 function* startGameSaga() {
   const { socket } = yield select((state) => state.socket);
-  const { roomId } = yield select((state) => state.control);
-  socket.emit('startGame', roomId);
+  socket.emit('startGame');
 }
 
 function* confirmSettingSaga(action) {
   const { socket } = yield select((state) => state.socket);
-  const { roomId } = yield select((state) => state.control);
-
   const { totalTime, numOfSection } = action.payload;
-  console.log('You have requested update setting');
-  socket.emit('updateSetting', { roomId, totalTime, numOfSection });
+  socket.emit('updateSetting', { totalTime, numOfSection });
 }
 
 function* surrenderSaga() {
   const { socket } = yield select((state) => state.socket);
-  const { roomId, myIdx } = yield select((state) => state.control);
-  socket.emit('surrender', { roomId, loserIdx: myIdx });
+  const { myIdx } = yield select((state) => state.control);
+  socket.emit('surrender', myIdx);
 }
 
 export function* controlSaga() {

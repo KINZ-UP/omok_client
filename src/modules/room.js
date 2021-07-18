@@ -86,7 +86,7 @@ function* createRoomSaga(action) {
   yield put(startLoading(CREATE_ROOM));
   try {
     const { title, password, setting } = action.payload;
-    socket.emit('onCreateRoom', { title, password, setting });
+    socket.emit('createRoom', { title, password, setting });
 
     channel = yield call(createSocketChannel, socket, 'sendRoomId');
     const roomId = yield take(channel);

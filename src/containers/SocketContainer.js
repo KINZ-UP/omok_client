@@ -16,7 +16,7 @@ function SocketContainer() {
 
     if (loggedIn) {
       dispatch(connect(socket));
-      socket.on('connect', function () {
+      socket.on('connect', () => {
         socket.emit('newUser', username);
       });
     }

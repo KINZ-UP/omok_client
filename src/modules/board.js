@@ -100,15 +100,12 @@ export function* openGameChannelSaga() {
 
 function* putStoneSaga(action) {
   const { socket } = yield select((state) => state.socket);
-  const { roomId } = yield select((state) => state.control);
   const { position } = action.payload;
 
-  socket.emit('putStone', { roomId, position });
+  socket.emit('putStone', position);
 }
 
 export function* boardSaga() {
-  // yield throttle(300, MOUSE_MOVE, mouseMoveSaga);
-  // yield throttle(300, MOUSE_LEAVE, mouseLeaveSaga);
   yield takeLatest(REQUEST_PUT_STONE, putStoneSaga);
 }
 
