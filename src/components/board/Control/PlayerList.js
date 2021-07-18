@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { palette } from '../../../lib/styles/palette';
 
@@ -62,9 +61,8 @@ const TurnMarkerBlock = styled.div`
   margin-right: 0.5rem;
 `;
 
-function PlayerList({ players, turnIdx }) {
+function PlayerList({ players, turnIdx, myIdx }) {
   const [player1, player2] = players;
-  const { myIdx } = useSelector(({ control }) => control);
 
   return (
     <PlayerListBlock>

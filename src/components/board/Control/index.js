@@ -2,20 +2,20 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import ChatContainer from '../../../containers/board/ChatContainer';
-import PlayerList from './PlayerList';
 import MenusContainer from '../../../containers/board/MenusContainer';
 import StopwatchContainer from '../../../containers/board/StopwatchContainer';
 import { palette } from '../../../lib/styles/palette';
 import SettingModalContainer from '../../../containers/board/SettingModalContainer';
 import AlertModalContainer from '../../../containers/common/AlertModalContainer';
+import PlayerListContainer from '../../../containers/board/PlayerListContainer';
 
-function Control({ isJoined, players, turnIdx }) {
+function Control({ isJoined }) {
   if (!isJoined) return <ControlBlock />;
 
   return (
     <ControlBlock>
       <ChatContainer />
-      <PlayerList players={players} turnIdx={turnIdx} />
+      <PlayerListContainer />
       <StopwatchContainer />
       <MenusContainer />
       <SettingModalContainer />

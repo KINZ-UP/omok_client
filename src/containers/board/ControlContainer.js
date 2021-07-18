@@ -7,9 +7,7 @@ import { joinRoom, leaveRoom } from '../../modules/control';
 import { closeChannel } from '../../modules/socket';
 
 function ControlContainer({ match }) {
-  const { isJoined, players, turnIdx, joinError } = useSelector(
-    ({ control }) => control
-  );
+  const { isJoined, joinError } = useSelector(({ control }) => control);
   const { username } = useSelector(({ user }) => user);
   const { roomId } = match.params;
 
@@ -37,7 +35,7 @@ function ControlContainer({ match }) {
 
   useEffect(() => () => dispatch(closeChannel('update')), [dispatch]);
 
-  return <Control isJoined={isJoined} players={players} turnIdx={turnIdx} />;
+  return <Control isJoined={isJoined} />;
 }
 
 export default withRouter(ControlContainer);
